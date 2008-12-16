@@ -41,13 +41,13 @@
 - (BOOL)step;
 
 /** Get result column as int64. */
-- (sqlite_int64)columnCount;
+- (long long int)columnCount;
 
 /** Get column name. */
 - (NSString*)columnName:(int)column;
 
 /** Get result column as int64. */
-- (sqlite_int64)int64Column:(int)column;
+- (long long int)int64Column:(int)column;
 
 /** Get result column as NSString. */
 - (NSString*)textColumn:(int)column;
@@ -62,6 +62,6 @@
 
 /** Bind int64 to a compiled statement.
     @note index is 0-based */
-- (void)bindInt64:(int)bind value:(sqlite_int64)value;
+- (void)bindInt64:(int)bind value:(long long int)value;
 
 @end

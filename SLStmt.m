@@ -49,7 +49,7 @@
 	return ( err_ == SQLITE_ROW ) ? YES : NO;
 }
 
-- (sqlite_int64)columnCount
+- (long long int)columnCount
 {
 	return sqlite3_column_count( stmt_ );
 }
@@ -62,7 +62,7 @@
 	return [[NSString alloc] initWithUTF8String:text];
 }
 
-- (sqlite_int64)int64Column:(int)column
+- (long long int)int64Column:(int)column
 {
 	return sqlite3_column_int64( stmt_, column );
 }
@@ -122,7 +122,7 @@
 	return dictr;
 }
 
-- (void)bindInt64:(int)bind value:(sqlite_int64)value
+- (void)bindInt64:(int)bind value:(long long int)value
 {
 	err_ = sqlite3_bind_int64( stmt_, bind+1, value );
 }
