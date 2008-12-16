@@ -21,6 +21,7 @@
 	SLDatabase *database_;
 	sqlite3_stmt *stmt_;
 	int err_;
+	const char * msg_;
 }
 
 /** Pointer to sqlite3_stmt. */
@@ -36,6 +37,8 @@
 - (id)initWithDatabase:(SLDatabase*)database sql:(NSString*)sql;
 
 - (void)dealloc;
+
+- (void)close;
 
 /** Step to next result row. */
 - (BOOL)step;

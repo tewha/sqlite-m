@@ -23,14 +23,25 @@
 {
 	self = [super init];
 	if (!self) return self;
-	err_ = sqlite3_prepare_v2([database dtbs], [sql UTF8String], -1, &stmt_, 0);
+	sqlite3 * db = [database dtbs];
+	err_ = sqlite3_prepare_v2(db, [sql UTF8String], -1, &stmt_, 0);
+	msg_ = sqlite3_errmsg( db );
 	return self;
 }
 
 - (void)dealloc
 {
-	sqlite3_finalize( stmt_ );
+	if ( stmt_ )
+		sqlite3_finalize( stmt_ );
 	[super dealloc];
+}
+
+- (void)close
+{
+	if ( stmt_ ) {
+		sqlite3_finalize( stmt_ );
+		stmt_ = NULL;
+	}
 }
 
 - (sqlite3_stmt*)stmt
@@ -46,6 +57,7 @@
 - (BOOL)step
 {
 	err_ = sqlite3_step( stmt_ );
+	msg_ = sqlite3_errmsg( stmt_ );
 	return ( err_ == SQLITE_ROW ) ? YES : NO;
 }
 
@@ -125,6 +137,7 @@
 - (void)bindInt64:(int)bind value:(long long int)value
 {
 	err_ = sqlite3_bind_int64( stmt_, bind+1, value );
+	msg_ = sqlite3_errmsg( stmt_ );
 }
 
 @end
