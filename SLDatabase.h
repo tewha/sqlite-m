@@ -19,6 +19,7 @@
 @interface SLDatabase : NSObject {
 	sqlite3 *dtbs_;
 	int err_;
+	const char *msg_;
 }
 /** Pointer to sqlite3 database. */
 @property (readonly) sqlite3* dtbs;
@@ -34,5 +35,7 @@
 
 /** Prepare a SQL statement. */
 - (SLStmt*)prepare:(NSString*)sql;
+
+- (BOOL)exec:(NSString*)sql;
 
 @end

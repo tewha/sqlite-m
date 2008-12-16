@@ -24,6 +24,7 @@
 	self = [super init];
 	if (!self) return self;
 	err_ = sqlite3_open([inPath UTF8String], &dtbs_);
+	msg_ = sqlite3_errmsg(dtbs_);
 	return self;
 }
 
@@ -35,9 +36,16 @@
 
 - (SLStmt*)prepare:(NSString*)sql
 {
-	SLStmt *stmt = [[SLStmt alloc] initWithDatabase:self sql:sql];
+	SLStmt *stmt = [[[SLStmt alloc] initWithDatabase:self sql:sql] autorelease];
 	err_ = stmt.err;
 	return stmt;
+}
+
+- (BOOL)exec:(NSString*)sql
+{
+	err_ = sqlite3_exec(dtbs_, [sql UTF8String], NULL, NULL, NULL);
+	msg_ = sqlite3_errmsg(dtbs_);
+	return err_ == SQLITE_OK;
 }
 
 @end
