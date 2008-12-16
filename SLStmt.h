@@ -41,10 +41,24 @@
 - (BOOL)step;
 
 /** Get result column as int64. */
+- (sqlite_int64)columnCount;
+
+/** Get column name. */
+- (NSString*)columnName:(int)column;
+
+/** Get result column as int64. */
 - (sqlite_int64)int64Column:(int)column;
 
 /** Get result column as NSString. */
 - (NSString*)textColumn:(int)column;
+
+/** Get result column as NSString, NSNumber or NSBlob. */
+- (id)column:(int)column;
+
+- (NSDictionary*)allColumns;
+
+/** Get column type. */
+- (int)columnType:(int)column;
 
 /** Bind int64 to a compiled statement.
     @note index is 0-based */
