@@ -14,6 +14,12 @@
 
 @synthesize err=err_, stmt=stmt_;
 
+- (void)setResult:(int)err
+{
+	err_ = err;
+	msg_ = sqlite3_errmsg(database_);
+}
+
 + (id)stmtWithDatabase:(SLDatabase*)database sql:(NSString*)sql
 {
     return [[[SLStmt alloc] initWithDatabase:database sql:sql] autorelease];
@@ -23,9 +29,8 @@
 {
 	self = [super init];
 	if (!self) return self;
-	sqlite3 * db = [database dtbs];
-	err_ = sqlite3_prepare_v2(db, [sql UTF8String], -1, &stmt_, 0);
-	msg_ = sqlite3_errmsg( db );
+	database_ = [database dtbs];
+	[self setResult:sqlite3_prepare_v2(database_, [sql UTF8String], -1, &stmt_, 0)];
 	return self;
 }
 
@@ -56,8 +61,7 @@
 
 - (BOOL)step
 {
-	err_ = sqlite3_step( stmt_ );
-	msg_ = sqlite3_errmsg( stmt_ );
+	[self setResult:sqlite3_step( stmt_ )];
 	return ( err_ == SQLITE_ROW ) ? YES : NO;
 }
 
@@ -71,7 +75,7 @@
 	const char * text = sqlite3_column_name( stmt_, column );
 	if ( text == NULL )
 		return NULL;
-	return [[NSString alloc] initWithUTF8String:text];
+	return [NSString stringWithUTF8String:text];
 }
 
 - (long long int)int64Column:(int)column
@@ -84,7 +88,7 @@
 	const char * text = (char*)sqlite3_column_text( stmt_, column);
 	if ( text == NULL )
 		return NULL;
-	return [[NSString alloc] initWithUTF8String:text];
+	return [NSString stringWithUTF8String:text];
 }
 
 - (int)columnType:(int)column
@@ -97,20 +101,20 @@
 	int type = sqlite3_column_type( stmt_, column );
 	switch (type) {
 		case SQLITE_INTEGER:
-			return [[NSNumber alloc] initWithLongLong:sqlite3_column_int64( stmt_, column )];
+			return [NSNumber numberWithLongLong:sqlite3_column_int64( stmt_, column )];
 		case SQLITE_FLOAT:
-			return [[NSNumber alloc] initWithDouble:sqlite3_column_double( stmt_, column )];
+			return [NSNumber numberWithDouble:sqlite3_column_double( stmt_, column )];
 		case SQLITE_BLOB:
 		{
 			const void * bytes = sqlite3_column_blob( stmt_, column );
-			return [[NSData alloc] initWithBytes:bytes length:sqlite3_column_bytes( stmt_, column )];
+			return [NSData dataWithBytes:bytes length:sqlite3_column_bytes( stmt_, column )];
 		}
 		case SQLITE_NULL:
 			return NULL;
 		case SQLITE_TEXT:
 		{
 			const unsigned char * text = sqlite3_column_text( stmt_, column );
-			return [[NSString alloc] initWithUTF8String:(char*)text];
+			return [NSString stringWithUTF8String:(char*)text];
 		}
 		default:
 			return NULL;
@@ -127,8 +131,6 @@
 			continue;
 		NSString * name = [self columnName:i];
 		[dict setObject:value forKey:name];
-		[name release];
-		[value release];
 	}
 	NSDictionary * dictr = [[NSDictionary alloc] initWithDictionary:dict];
 	return dictr;
@@ -136,8 +138,7 @@
 
 - (void)bindInt64:(int)bind value:(long long int)value
 {
-	err_ = sqlite3_bind_int64( stmt_, bind+1, value );
-	msg_ = sqlite3_errmsg( stmt_ );
+	[self setResult:sqlite3_bind_int64( stmt_, bind+1, value )];
 }
 
 @end

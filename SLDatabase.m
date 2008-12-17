@@ -14,6 +14,12 @@
 
 @synthesize err=err_, dtbs=dtbs_;
 
+- (void)setResult:(int)err
+{
+	err_ = err;
+	msg_ = sqlite3_errmsg(dtbs_);
+}
+
 + (id)databaseWithPath:(NSString*)inPath
 {
     return [[[SLDatabase alloc] initWithPath:inPath] autorelease];
@@ -23,8 +29,7 @@
 {
 	self = [super init];
 	if (!self) return self;
-	err_ = sqlite3_open([inPath UTF8String], &dtbs_);
-	msg_ = sqlite3_errmsg(dtbs_);
+	[self setResult:sqlite3_open([inPath UTF8String], &dtbs_)];
 	return self;
 }
 
@@ -37,14 +42,13 @@
 - (SLStmt*)prepare:(NSString*)sql
 {
 	SLStmt *stmt = [[[SLStmt alloc] initWithDatabase:self sql:sql] autorelease];
-	err_ = stmt.err;
+	[self setResult:stmt.err];
 	return stmt;
 }
 
 - (BOOL)exec:(NSString*)sql
 {
-	err_ = sqlite3_exec(dtbs_, [sql UTF8String], NULL, NULL, NULL);
-	msg_ = sqlite3_errmsg(dtbs_);
+	[self setResult:sqlite3_exec(dtbs_, [sql UTF8String], NULL, NULL, NULL)];
 	return err_ == SQLITE_OK;
 }
 
