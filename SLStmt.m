@@ -12,12 +12,19 @@
 
 @implementation SLStmt
 
-@synthesize err=err_, stmt=stmt_;
+@synthesize extendedErr=err_, stmt=stmt_;
+
+- (int)simpleErr
+{
+	return err_ & 0xFF;
+}
 
 - (void)setResult:(int)err
 {
 	err_ = err;
 	msg_ = sqlite3_errmsg(database_);
+	if ( ( err_ != SQLITE_OK ) && ( self.simpleErr < 100 ) )
+		NSLog( @"SLStmt: (%d) %s", err_, msg_ );
 }
 
 + (id)stmtWithDatabase:(SLDatabase*)database sql:(NSString*)sql
@@ -30,7 +37,7 @@
 	self = [super init];
 	if (!self) return self;
 	database_ = [database dtbs];
-	[self setResult:sqlite3_prepare_v2(database_, [sql UTF8String], -1, &stmt_, 0)];
+	[self prepare:sql];
 	return self;
 }
 
@@ -39,6 +46,15 @@
 	if ( stmt_ )
 		sqlite3_finalize( stmt_ );
 	[super dealloc];
+}
+
+- (void)prepare:(NSString*)sql
+{
+	if ( stmt_ ) {
+		[self close];
+		stmt_ = NULL;
+	}
+	[self setResult:sqlite3_prepare_v2(database_, [sql UTF8String], -1, &stmt_, 0)];
 }
 
 - (void)close
@@ -52,11 +68,6 @@
 - (sqlite3_stmt*)stmt
 {
 	return stmt_;
-}
-
-- (int)err
-{
-	return err_;
 }
 
 - (BOOL)step

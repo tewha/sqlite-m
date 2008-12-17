@@ -28,7 +28,10 @@
 @property (readonly) sqlite3_stmt* stmt;
 
 /** Return result of last command. */
-@property (readonly) int err;
+@property (readonly) int simpleErr;
+
+/** Return result of last command. */
+@property (readonly) int extendedErr;
 
 /** Create a new, auto-released statement. */
 + (id)stmtWithDatabase:(SLDatabase*)database sql:(NSString*)sql;
@@ -37,6 +40,8 @@
 - (id)initWithDatabase:(SLDatabase*)database sql:(NSString*)sql;
 
 - (void)dealloc;
+
+- (void)prepare:(NSString*)sql;
 
 - (void)close;
 

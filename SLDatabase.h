@@ -25,7 +25,10 @@
 @property (readonly) sqlite3* dtbs;
 
 /** Result of last command. */
-@property (readonly) int err;
+@property (readonly) int extendedErr;
+
+/** Result of last command. */
+@property (readonly) int simpleErr;
 
 /** Allocate a new, autoreleased SLDatabase. */
 + (id)databaseWithPath:(NSString*)inPath;

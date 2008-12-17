@@ -12,12 +12,19 @@
 
 @implementation SLDatabase
 
-@synthesize err=err_, dtbs=dtbs_;
+@synthesize extendedErr=err_, dtbs=dtbs_;
+
+- (int)simpleErr
+{
+	return err_ & 0xFF;
+}
 
 - (void)setResult:(int)err
 {
 	err_ = err;
 	msg_ = sqlite3_errmsg(dtbs_);
+	if ( ( err_ != SQLITE_OK ) && ( self.simpleErr < 100 ) )
+		NSLog( @"SLDatabase: (%d) %s", err_, msg_ );
 }
 
 + (id)databaseWithPath:(NSString*)inPath
@@ -30,6 +37,7 @@
 	self = [super init];
 	if (!self) return self;
 	[self setResult:sqlite3_open([inPath UTF8String], &dtbs_)];
+	sqlite3_extended_result_codes( dtbs_, TRUE );
 	return self;
 }
 
@@ -42,7 +50,7 @@
 - (SLStmt*)prepare:(NSString*)sql
 {
 	SLStmt *stmt = [[[SLStmt alloc] initWithDatabase:self sql:sql] autorelease];
-	[self setResult:stmt.err];
+	[self setResult:stmt.extendedErr];
 	return stmt;
 }
 
