@@ -73,7 +73,7 @@
 - (BOOL)step
 {
 	[self setResult:sqlite3_step( stmt_ )];
-	return ( err_ == SQLITE_ROW ) ? YES : NO;
+	return ( [self simpleErr] == SQLITE_ROW ) ? YES : NO;
 }
 
 - (long long int)columnCount
