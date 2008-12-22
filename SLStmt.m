@@ -144,17 +144,18 @@
 }
 
 - (NSDictionary*)allColumns {
-	NSMutableDictionary * dict = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary * temp_values = [[NSMutableDictionary alloc] init];
 	int n = [self columnCount];
 	for ( int i = 0; i < n; i++ ) {
 		id value = [self columnByIndex:i];
 		if (!value)
 			continue;
 		NSString * name = [self columnNameByIndex:i];
-		[dict setObject:value forKey:name];
+		[temp_values setObject:value forKey:name];
 	}
-	NSDictionary * dictr = [[NSDictionary alloc] initWithDictionary:dict];
-	return dictr;
+	NSDictionary * values = [[NSDictionary alloc] initWithDictionary:temp_values];
+	[temp_values release];
+	return [values autorelease];
 }
 
 - (void)bindIntByIndex:(int)bind value:(long long int)value {
