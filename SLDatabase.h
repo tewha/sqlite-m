@@ -36,9 +36,6 @@
 /** Initialize a new SLDatabase. */
 - (id)initWithPath:(NSString*)inPath;
 
-/** Prepare a SQL statement. */
-- (SLStmt*)prepare:(NSString*)sql;
-
 - (BOOL)exec:(NSString*)sql;
 
 @end

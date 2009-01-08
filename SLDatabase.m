@@ -47,13 +47,6 @@
 	[super dealloc];
 }
 
-- (SLStmt*)prepare:(NSString*)sql
-{
-	SLStmt *stmt = [[[SLStmt alloc] initWithDatabase:self sql:sql] autorelease];
-	[self setResult:stmt.extendedErr];
-	return stmt;
-}
-
 - (BOOL)exec:(NSString*)sql
 {
 	[self setResult:sqlite3_exec(_dtbs, [sql UTF8String], NULL, NULL, NULL)];
