@@ -13,16 +13,16 @@
 @class SLDatabase;
 
 /** @class SLStmt
-	@brief Compiled SQLite statement.
-
-	Objetive-C wrapper for sqlite3_stmt*. */
+ @brief Compiled SQLite statement.
+ 
+ Objetive-C wrapper for sqlite3_stmt*. */
 @interface SLStmt : NSObject {
-	sqlite3 *database_;
-	sqlite3_stmt *stmt_;
-	int err_;
-	int bind_;
-	int column_;
-	const char * msg_;
+	sqlite3 *_database;
+	sqlite3_stmt *_stmt;
+	int _err;
+	int _bind;
+	int _column;
+	const char *_msg;
 }
 
 /** Pointer to sqlite3_stmt. */
@@ -35,10 +35,12 @@
 @property (readonly) int extendedErr;
 
 /** Create a new, auto-released statement. */
-+ (id)stmtWithDatabase:(SLDatabase*)database sql:(NSString*)sql;
++ (id)stmtWithDatabase:(SLDatabase*)database
+				   sql:(NSString*)sql;
 
 /** Create a statement. */
-- (id)initWithDatabase:(SLDatabase*)database sql:(NSString*)sql;
+- (id)initWithDatabase:(SLDatabase*)database
+				   sql:(NSString*)sql;
 
 - (void)dealloc;
 
@@ -87,15 +89,17 @@
 - (int)columnType;
 
 /** Bind int64 to a compiled statement.
-	@note index is 0-based */
-- (void)bindIntByIndex:(int)bind value:(long long int)value;
+ @note index is 0-based */
+- (void)bindIntByIndex:(int)bind
+				 value:(long long int)value;
 
 /** Bind int64 to a compiled statement and advance to next bind point. */
 - (void)bindInt:(long long int)value;
 
 /** Bind string to a compiled statement.
-	@note index is 0-based */
-- (void)bindStringByIndex:(int)bind value:(NSString*)value;
+ @note index is 0-based */
+- (void)bindStringByIndex:(int)bind
+					value:(NSString*)value;
 
 /** Bind string to a compiled statement and advance to next bind point. */
 - (void)bindString:(NSString*)value;

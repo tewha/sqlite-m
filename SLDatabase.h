@@ -13,13 +13,13 @@
 @class SLStmt;
 
 /** @class SLDatabase
-    @brief SQLite database.
-
-	Objetive-C wrapper for sqlite3*. */
+ @brief SQLite database.
+ 
+ Objetive-C wrapper for sqlite3*. */
 @interface SLDatabase : NSObject {
-	sqlite3 *dtbs_;
-	int err_;
-	const char *msg_;
+	sqlite3 *_dtbs;
+	int _err;
+	const char *_msg;
 }
 /** Pointer to sqlite3 database. */
 @property (readonly) sqlite3* dtbs;

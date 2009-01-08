@@ -12,19 +12,19 @@
 
 @implementation SLDatabase
 
-@synthesize extendedErr=err_, dtbs=dtbs_;
+@synthesize extendedErr=_err, dtbs=_dtbs;
 
 - (int)simpleErr
 {
-	return err_ & 0xFF;
+	return _err & 0xFF;
 }
 
 - (void)setResult:(int)err
 {
-	err_ = err;
-	msg_ = sqlite3_errmsg(dtbs_);
-	if ( ( err_ != SQLITE_OK ) && ( self.simpleErr < 100 ) )
-		NSLog( @"SLDatabase: (%d) %s", err_, msg_ );
+	_err = err;
+	_msg = sqlite3_errmsg(_dtbs);
+	if ( ( _err != SQLITE_OK ) && ( self.simpleErr < 100 ) )
+		NSLog( @"SLDatabase: (%d) %s", _err, _msg );
 }
 
 + (id)databaseWithPath:(NSString*)inPath
@@ -36,14 +36,14 @@
 {
 	self = [super init];
 	if (!self) return self;
-	[self setResult:sqlite3_open([inPath UTF8String], &dtbs_)];
-	sqlite3_extended_result_codes( dtbs_, TRUE );
+	[self setResult:sqlite3_open([inPath UTF8String], &_dtbs)];
+	sqlite3_extended_result_codes( _dtbs, TRUE );
 	return self;
 }
 
 - (void)dealloc
 {
-	sqlite3_close( dtbs_ );
+	sqlite3_close( _dtbs );
 	[super dealloc];
 }
 
@@ -56,8 +56,8 @@
 
 - (BOOL)exec:(NSString*)sql
 {
-	[self setResult:sqlite3_exec(dtbs_, [sql UTF8String], NULL, NULL, NULL)];
-	return err_ == SQLITE_OK;
+	[self setResult:sqlite3_exec(_dtbs, [sql UTF8String], NULL, NULL, NULL)];
+	return _err == SQLITE_OK;
 }
 
 @end
