@@ -43,7 +43,9 @@
 
 - (void)dealloc
 {
-	sqlite3_close( _dtbs );
+	int err = sqlite3_close( _dtbs );
+	if ( err != SQLITE_OK )
+		NSLog( @"Error %d while closing database.", err );
 	[super dealloc];
 }
 

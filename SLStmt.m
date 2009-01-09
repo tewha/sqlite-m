@@ -40,8 +40,11 @@
 }
 
 - (void)dealloc {
-	if ( _stmt )
-		sqlite3_finalize( _stmt );
+	if ( _stmt ) {
+		int err = sqlite3_finalize( _stmt );
+		if ( err != SQLITE_OK )
+			NSLog( @"Error %d while finalizing query as part of dealloc.", err );
+	}
 	[super dealloc];
 }
 
@@ -70,7 +73,9 @@
 
 - (void)close {
 	if ( _stmt ) {
-		sqlite3_finalize( _stmt );
+		int err = sqlite3_finalize( _stmt );
+		if ( err != SQLITE_OK )
+			NSLog( @"Error %d while finalizing query as part of close.", err );
 		_stmt = NULL;
 	}
 }
