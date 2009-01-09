@@ -17,7 +17,7 @@
  
  Objetive-C wrapper for sqlite3_stmt*. */
 @interface SLStmt : NSObject {
-	sqlite3 *_database;
+	SLDatabase *_database;
 	sqlite3_stmt *_stmt;
 	int _err;
 	int _bind;

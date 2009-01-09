@@ -20,7 +20,7 @@
 
 - (void)setResult:(int)err {
 	_err = err;
-	_msg = sqlite3_errmsg(_database);
+	_msg = sqlite3_errmsg([_database dtbs]);
 	if ( ( _err != SQLITE_OK ) && ( self.simpleErr < 100 ) )
 		NSLog( @"SLStmt: (%d) %s", _err, _msg );
 }
@@ -34,7 +34,7 @@
 			   withSql:(NSString*)sql {
 	self = [super init];
 	if (!self) return self;
-	_database = [database dtbs];
+	_database = [database retain];
 	[self prepare:sql];
 	return self;
 }
@@ -45,6 +45,7 @@
 		if ( err != SQLITE_OK )
 			NSLog( @"Error %d while finalizing query as part of dealloc.", err );
 	}
+	[_database release];
 	[super dealloc];
 }
 
@@ -53,14 +54,14 @@
 		[self close];
 		_stmt = NULL;
 	}
-	[self setResult:sqlite3_prepare_v2(_database, [sql UTF8String], -1, &_stmt, &_nextSql)];
+	[self setResult:sqlite3_prepare_v2([_database dtbs], [sql UTF8String], -1, &_stmt, &_nextSql)];
 	_bind = 0;
 }
 
 - (BOOL)prepareNext {
 	if ( ( _nextSql == NULL ) || ( *_nextSql == 0 ) )
 		return NO;
-	[self setResult:sqlite3_prepare_v2(_database, _nextSql, -1, &_stmt, &_nextSql)];
+	[self setResult:sqlite3_prepare_v2([_database dtbs], _nextSql, -1, &_stmt, &_nextSql)];
 	return YES;
 }
 
