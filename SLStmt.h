@@ -22,6 +22,7 @@
 	int _err;
 	int _bind;
 	int _column;
+	NSString *_sql;
 	const char *_msg;
 	const char *_nextSql;
 }
@@ -69,16 +70,16 @@
 - (NSString*)columnName;
 
 /** Get a specific column's contents as int64. */
-- (long long)longLongColumn:(int)column;
+- (long long)longLongValue:(int)column;
 
 /** Get current column's contents as int64 and advance to next column. */
-- (long long)longLongColumn;
+- (long long)longLongValue;
 
 /** Get a specific column's contents as NSString. */
-- (NSString*)stringColumn:(int)column;
+- (NSString*)stringValue:(int)column;
 
 /** Get current column's contents as NSString and advance to next column. */
-- (NSString*)stringColumn;
+- (NSString*)stringValue;
 
 /** Get a specific column's contents as NSString, NSNumber or NSBlob. */
 - (id)column:(int)column;

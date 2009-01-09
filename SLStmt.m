@@ -40,21 +40,18 @@
 }
 
 - (void)dealloc {
-	if ( _stmt ) {
-		int err = sqlite3_finalize( _stmt );
-		if ( err != SQLITE_OK )
-			NSLog( @"Error %d while finalizing query as part of dealloc.", err );
-	}
+	[self close];
+	[_sql release];
 	[_database release];
 	[super dealloc];
 }
 
 - (void)prepare:(NSString*)sql {
-	if ( _stmt ) {
-		[self close];
-		_stmt = NULL;
-	}
-	[self setResult:sqlite3_prepare_v2([_database dtbs], [sql UTF8String], -1, &_stmt, &_nextSql)];
+	[sql retain];
+	[self close];
+	[_sql release];
+	_sql = sql;
+	[self setResult:sqlite3_prepare_v2([_database dtbs], [_sql UTF8String], -1, &_stmt, &_nextSql)];
 	_bind = 0;
 }
 
@@ -109,22 +106,22 @@
 	return [NSString stringWithUTF8String:text];
 }
 
-- (long long)longLongColumn:(int)column {
+- (long long)longLongValue:(int)column {
 	return sqlite3_column_int64( _stmt, column );
 }
 
-- (long long)longLongColumn {
-	return [self longLongColumn:_column++];
+- (long long)longLongValue {
+	return [self longLongValue:_column++];
 }
 
-- (NSString*)stringColumn:(int)column {
+- (NSString*)stringValue:(int)column {
 	const char * text = (char*)sqlite3_column_text( _stmt, column);
 	if ( text == NULL )
 		return NULL;
 	return [NSString stringWithUTF8String:text];
 }
 
-- (NSString*)stringColumn {
+- (NSString*)stringValue {
 	const char * text = (char*)sqlite3_column_text( _stmt, _column++);
 	if ( text == NULL )
 		return NULL;
