@@ -91,7 +91,7 @@
 	return ( [self simpleErr] == SQLITE_ROW ) ? YES : NO;
 }
 
-- (long long int)columnCount {
+- (long long)columnCount {
 	return sqlite3_column_count( _stmt );
 }
 
@@ -109,12 +109,12 @@
 	return [NSString stringWithUTF8String:text];
 }
 
-- (long long int)longLongIntColumn:(int)column {
+- (long long)longLongColumn:(int)column {
 	return sqlite3_column_int64( _stmt, column );
 }
 
-- (long long int)longLongIntColumn {
-	return [self longLongIntColumn:_column++];
+- (long long)longLongColumn {
+	return [self longLongColumn:_column++];
 }
 
 - (NSString*)stringColumn:(int)column {
@@ -180,13 +180,13 @@
 	return [values autorelease];
 }
 
-- (void)bindLongLongInt:(long long int)value
+- (void)bindLongLong:(long long)value
 			   forIndex:(int)index {
 	[self setResult:sqlite3_bind_int64( _stmt, index+1, value )];
 }
 
-- (void)bindLongLongInt:(long long int)value {
-	[self bindLongLongInt:value forIndex:_bind++];
+- (void)bindLongLong:(long long)value {
+	[self bindLongLong:value forIndex:_bind++];
 }
 
 - (void)bindString:(NSString*)value

@@ -60,7 +60,7 @@
 - (BOOL)step;
 
 /** Get the number of columns in the result set. */
-- (long long int)columnCount;
+- (long long)columnCount;
 
 /** Get a specifc column's name. */
 - (NSString*)columnName:(int)column;
@@ -69,10 +69,10 @@
 - (NSString*)columnName;
 
 /** Get a specific column's contents as int64. */
-- (long long int)longLongIntColumn:(int)column;
+- (long long)longLongColumn:(int)column;
 
 /** Get current column's contents as int64 and advance to next column. */
-- (long long int)longLongIntColumn;
+- (long long)longLongColumn;
 
 /** Get a specific column's contents as NSString. */
 - (NSString*)stringColumn:(int)column;
@@ -97,11 +97,11 @@
 
 /** Bind int64 to a compiled statement.
  @note index is 0-based */
-- (void)bindLongLongInt:(long long int)value
+- (void)bindLongLong:(long long)value
 			   forIndex:(int)index;
 
 /** Bind int64 to a compiled statement and advance to next bind point. */
-- (void)bindLongLongInt:(long long int)value;
+- (void)bindLongLong:(long long)value;
 
 /** Bind string to a compiled statement.
  @note index is 0-based */
