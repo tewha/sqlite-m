@@ -18,7 +18,7 @@
  supporting core types such as NSString and NSNumber and using Objective-C
  messaging and memory management.
  
- @seealso SLDatabase, SLStmt
+ @sa SLDatabase, SLStmt
  */
 
 /** @page copyright Copyright Information

@@ -52,6 +52,8 @@
 /** Compile next SQL query. Rewinds to first bind point. */
 - (BOOL)prepareNext;
 
+/** Reset current statement.
+ sa sqlite3_reset */
 - (void)reset;
 
 /** Finalizes a query, closing it in sqlite library. */
@@ -99,7 +101,7 @@
 /** Bind int64 to a compiled statement.
  @note index is 0-based */
 - (void)bindLongLong:(long long)value
-			   forIndex:(int)index;
+			forIndex:(int)index;
 
 /** Bind int64 to a compiled statement and advance to next bind point. */
 - (void)bindLongLong:(long long)value;

@@ -179,7 +179,7 @@
 }
 
 - (void)bindLongLong:(long long)value
-			   forIndex:(int)index {
+			forIndex:(int)index {
 	[self setResult:sqlite3_bind_int64( _stmt, index+1, value )];
 }
 
