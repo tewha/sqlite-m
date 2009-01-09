@@ -28,7 +28,7 @@
 }
 
 /** Pointer to sqlite3_stmt. */
-@property (readonly) sqlite3_stmt* stmt;
+@property (readonly) sqlite3_stmt *stmt;
 
 /** Return result of last command. */
 @property (readonly) int simpleErr;

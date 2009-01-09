@@ -93,14 +93,14 @@
 }
 
 - (NSString*)columnName:(int)column {
-	const char * text = sqlite3_column_name( _stmt, column );
+	const char *text = sqlite3_column_name( _stmt, column );
 	if ( text == NULL )
 		return NULL;
 	return [NSString stringWithUTF8String:text];
 }
 
 - (NSString*)columnName {
-	const char * text = sqlite3_column_name( _stmt, _column );
+	const char *text = sqlite3_column_name( _stmt, _column );
 	if ( text == NULL )
 		return NULL;
 	return [NSString stringWithUTF8String:text];
@@ -115,14 +115,14 @@
 }
 
 - (NSString*)stringValue:(int)column {
-	const char * text = (char*)sqlite3_column_text( _stmt, column);
+	const char *text = (char*)sqlite3_column_text( _stmt, column);
 	if ( text == NULL )
 		return NULL;
 	return [NSString stringWithUTF8String:text];
 }
 
 - (NSString*)stringValue {
-	const char * text = (char*)sqlite3_column_text( _stmt, _column++);
+	const char *text = (char*)sqlite3_column_text( _stmt, _column++);
 	if ( text == NULL )
 		return NULL;
 	return [NSString stringWithUTF8String:text];
@@ -144,13 +144,14 @@
 		case SQLITE_FLOAT:
 			return [NSNumber numberWithDouble:sqlite3_column_double( _stmt, column )];
 		case SQLITE_BLOB: {
-			const void * bytes = sqlite3_column_blob( _stmt, column );
-			return [NSData dataWithBytes:bytes length:sqlite3_column_bytes( _stmt, column )];
+			const void *bytes = sqlite3_column_blob( _stmt, column );
+			return [NSData dataWithBytes:bytes
+								  length:sqlite3_column_bytes( _stmt, column )];
 		}
 		case SQLITE_NULL:
 			return nil;
 		case SQLITE_TEXT: {
-			const unsigned char * text = sqlite3_column_text( _stmt, column );
+			const unsigned char *text = sqlite3_column_text( _stmt, column );
 			return [NSString stringWithUTF8String:(char*)text];
 		}
 		default:
@@ -163,16 +164,16 @@
 }
 
 - (NSDictionary*)allColumns {
-	NSMutableDictionary * temp_values = [[NSMutableDictionary alloc] init];
+	NSMutableDictionary *temp_values = [[NSMutableDictionary alloc] init];
 	int n = [self columnCount];
 	for ( int i = 0; i < n; i++ ) {
 		id value = [self column:i];
 		if (!value)
 			continue;
-		NSString * name = [self columnName:i];
+		NSString *name = [self columnName:i];
 		[temp_values setObject:value forKey:name];
 	}
-	NSDictionary * values = [[NSDictionary alloc] initWithDictionary:temp_values];
+	NSDictionary *values = [[NSDictionary alloc] initWithDictionary:temp_values];
 	[temp_values release];
 	return [values autorelease];
 }

@@ -22,7 +22,7 @@
 	const char *_msg;
 }
 /** Pointer to sqlite3 database. */
-@property (readonly) sqlite3* dtbs;
+@property (readonly) sqlite3 *dtbs;
 
 /** Result of last command. */
 @property (readonly) int extendedErr;
