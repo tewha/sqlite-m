@@ -84,13 +84,13 @@
 - (NSString*)stringValue;
 
 /** Get a specific column's contents as NSString, NSNumber or NSBlob. */
-- (id)column:(int)column;
+- (id)value:(int)column;
 
 /** Get current column's contents as NSString, NSNumber or NSBlob and advance to next column. */
-- (id)column;
+- (id)value;
 
 /** Get all column contents, returning name-value pairing. */
-- (NSDictionary*)allColumns;
+- (NSDictionary*)allValues;
 
 /** Get a specific column's type. */
 - (int)columnType:(int)column;

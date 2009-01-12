@@ -136,7 +136,7 @@
 	return sqlite3_column_type( _stmt, _column );
 }
 
-- (id)column:(int)column {
+- (id)value:(int)column {
 	int type = sqlite3_column_type( _stmt, column );
 	switch (type) {
 		case SQLITE_INTEGER:
@@ -159,15 +159,15 @@
 	}
 }
 
-- (id)column {
-	return [self column:_column++];
+- (id)value {
+	return [self value:_column++];
 }
 
-- (NSDictionary*)allColumns {
+- (NSDictionary*)allValues {
 	NSMutableDictionary *temp_values = [[NSMutableDictionary alloc] init];
 	int n = [self columnCount];
 	for ( int i = 0; i < n; i++ ) {
-		id value = [self column:i];
+		id value = [self value:i];
 		if (!value)
 			continue;
 		NSString *name = [self columnName:i];
