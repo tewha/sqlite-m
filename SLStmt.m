@@ -95,14 +95,14 @@
 - (NSString*)columnName:(int)column {
 	const char *text = sqlite3_column_name( _stmt, column );
 	if ( text == NULL )
-		return NULL;
+		return nil;
 	return [NSString stringWithUTF8String:text];
 }
 
 - (NSString*)columnName {
 	const char *text = sqlite3_column_name( _stmt, _column );
 	if ( text == NULL )
-		return NULL;
+		return nil;
 	return [NSString stringWithUTF8String:text];
 }
 
@@ -117,14 +117,14 @@
 - (NSString*)stringValue:(int)column {
 	const char *text = (char*)sqlite3_column_text( _stmt, column);
 	if ( text == NULL )
-		return NULL;
+		return nil;
 	return [NSString stringWithUTF8String:text];
 }
 
 - (NSString*)stringValue {
 	const char *text = (char*)sqlite3_column_text( _stmt, _column++);
 	if ( text == NULL )
-		return NULL;
+		return nil;
 	return [NSString stringWithUTF8String:text];
 }
 
