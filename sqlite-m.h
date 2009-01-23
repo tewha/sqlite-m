@@ -26,5 +26,5 @@
  LICENSE.TXT.
  
  I waive the requirement for a copyright notice to be displayed in
- exuectables compiled for the iPhone or iPod touch.
+ executables compiled for the iPhone or iPod touch.
  */
