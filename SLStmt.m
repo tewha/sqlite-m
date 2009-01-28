@@ -64,6 +64,8 @@
 
 - (void)reset {
 	if ( _stmt ) {
+		_bind = 0;
+		_column = 0;
 		sqlite3_reset( _stmt );
 	}
 }
