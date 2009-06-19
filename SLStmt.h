@@ -38,16 +38,16 @@
 
 /** Create a new, auto-released statement. */
 + (id)stmtWithDatabase:(SLDatabase*)database
-			   withSql:(NSString*)sql;
+				   sql:(NSString*)sql;
 
 /** Create a statement. */
 - (id)initWithDatabase:(SLDatabase*)database
-			   withSql:(NSString*)sql;
+				   sql:(NSString*)sql;
 
 - (void)dealloc;
 
 /** Compile a SQL query into a prepared statement. Rewinds to first bind point. */
-- (SLStmt*)prepare:(NSString*)sql;
+- (SLStmt*)prepareSql:(NSString*)sql;
 
 /** Compile next SQL query. Rewinds to first bind point. */
 - (SLStmt*)prepareNext;

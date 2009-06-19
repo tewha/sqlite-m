@@ -26,16 +26,16 @@
 }
 
 + (id)stmtWithDatabase:(SLDatabase*)database
-			   withSql:(NSString*)sql {
-    return [[[SLStmt alloc] initWithDatabase:database withSql:sql] autorelease];
+				   sql:(NSString*)sql {
+    return [[[SLStmt alloc] initWithDatabase:database sql:sql] autorelease];
 }
 
 - (id)initWithDatabase:(SLDatabase*)database
-			   withSql:(NSString*)sql {
+				   sql:(NSString*)sql {
 	self = [super init];
 	if (!self) return self;
 	_database = [database retain];
-	[self prepare:sql];
+	[self prepareSql:sql];
 	return self;
 }
 
@@ -46,7 +46,7 @@
 	[super dealloc];
 }
 
-- (SLStmt*)prepare:(NSString*)sql {
+- (SLStmt*)prepareSql:(NSString*)sql {
 	[sql retain];
 	[self close];
 	[_sql release];
