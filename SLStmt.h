@@ -47,20 +47,20 @@
 - (void)dealloc;
 
 /** Compile a SQL query into a prepared statement. Rewinds to first bind point. */
-- (void)prepare:(NSString*)sql;
+- (SLStmt*)prepare:(NSString*)sql;
 
 /** Compile next SQL query. Rewinds to first bind point. */
-- (BOOL)prepareNext;
+- (SLStmt*)prepareNext;
 
 /** Reset current statement.
  sa sqlite3_reset */
-- (void)reset;
+- (SLStmt*)reset;
 
 /** Finalizes a query, closing it in sqlite library. */
-- (void)close;
+- (SLStmt*)close;
 
 /** Step to next result row. Rewinds to first column. */
-- (BOOL)step;
+- (SLStmt*)step;
 
 /** Get the number of columns in the result set. */
 - (long long)columnCount;
@@ -100,18 +100,18 @@
 
 /** Bind int64 to a compiled statement.
  @note index is 0-based */
-- (void)bindLongLong:(long long)value
-			forIndex:(int)index;
+- (SLStmt*)bindLongLong:(long long)value
+			   forIndex:(int)index;
 
 /** Bind int64 to a compiled statement and advance to next bind point. */
-- (void)bindLongLong:(long long)value;
+- (SLStmt*)bindLongLong:(long long)value;
 
 /** Bind string to a compiled statement.
  @note index is 0-based */
-- (void)bindString:(NSString*)value
-		  forIndex:(int)index;
+- (SLStmt*)bindString:(NSString*)value
+			 forIndex:(int)index;
 
 /** Bind string to a compiled statement and advance to next bind point. */
-- (void)bindString:(NSString*)value;
+- (SLStmt*)bindString:(NSString*)value;
 
 @end

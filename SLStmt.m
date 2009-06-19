@@ -46,48 +46,51 @@
 	[super dealloc];
 }
 
-- (void)prepare:(NSString*)sql {
+- (SLStmt*)prepare:(NSString*)sql {
 	[sql retain];
 	[self close];
 	[_sql release];
 	_sql = sql;
 	[self setResult:sqlite3_prepare_v2([_database dtbs], [_sql UTF8String], -1, &_stmt, &_nextSql)];
 	_bind = 0;
+	return self;
 }
 
-- (BOOL)prepareNext {
+- (SLStmt*)prepareNext {
 	if ( ( _nextSql == NULL ) || ( *_nextSql == 0 ) )
-		return NO;
+		return nil;
 	[self setResult:sqlite3_prepare_v2([_database dtbs], _nextSql, -1, &_stmt, &_nextSql)];
-	return YES;
+	return self;
 }
 
-- (void)reset {
+- (SLStmt*)reset {
 	if ( _stmt ) {
 		_bind = 0;
 		_column = 0;
 		sqlite3_reset( _stmt );
 	}
+	return self;
 }
 
 
-- (void)close {
+- (SLStmt*)close {
 	if ( _stmt ) {
 		int err = sqlite3_finalize( _stmt );
 		if ( err != SQLITE_OK )
 			NSLog( @"Error %d while finalizing query as part of close.", err );
 		_stmt = NULL;
 	}
+	return self;
 }
 
 - (sqlite3_stmt*)stmt {
 	return _stmt;
 }
 
-- (BOOL)step {
+- (SLStmt*)step {
 	[self setResult:sqlite3_step( _stmt )];
 	_column = 0;
-	return ( [self simpleErr] == SQLITE_ROW ) ? YES : NO;
+	return ( [self simpleErr] == SQLITE_ROW ) ? self : nil;
 }
 
 - (long long)columnCount {
@@ -180,22 +183,26 @@
 	return [values autorelease];
 }
 
-- (void)bindLongLong:(long long)value
-			forIndex:(int)index {
+- (SLStmt*)bindLongLong:(long long)value
+			   forIndex:(int)index {
 	[self setResult:sqlite3_bind_int64( _stmt, index+1, value )];
+	return self;
 }
 
-- (void)bindLongLong:(long long)value {
+- (SLStmt*)bindLongLong:(long long)value {
 	[self bindLongLong:value forIndex:_bind++];
+	return self;
 }
 
-- (void)bindString:(NSString*)value
-		  forIndex:(int)index {
+- (SLStmt*)bindString:(NSString*)value
+			 forIndex:(int)index {
 	[self setResult:sqlite3_bind_text( _stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )];
+	return self;
 }
 
-- (void)bindString:(NSString*)value {
+- (SLStmt*)bindString:(NSString*)value {
 	[self bindString:value forIndex:_bind++];
+	return self;
 }
 
 @end
