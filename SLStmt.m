@@ -27,7 +27,7 @@
 
 + (id)stmtWithDatabase:(SLDatabase*)database
 				   sql:(NSString*)sql {
-    return [[[SLStmt alloc] initWithDatabase:database sql:sql] autorelease];
+    return [[[self alloc] initWithDatabase:database sql:sql] autorelease];
 }
 
 - (id)initWithDatabase:(SLDatabase*)database
@@ -178,9 +178,9 @@
 		NSString *name = [self columnName:i];
 		[temp_values setObject:value forKey:name];
 	}
-	NSDictionary *values = [[NSDictionary alloc] initWithDictionary:temp_values];
+	NSDictionary *values = [NSDictionary dictionaryWithDictionary: temp_values];
 	[temp_values release];
-	return [values autorelease];
+	return values;
 }
 
 - (SLStmt*)bindLongLong:(long long)value
@@ -212,7 +212,7 @@
 }
 
 - (SLStmt*)bindData:(NSData*)value {
-	[self bindData:value forIndex:_bind++];
+	return [self bindData:value forIndex:_bind++];
 }
 
 
