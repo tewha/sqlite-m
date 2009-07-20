@@ -29,7 +29,7 @@
 
 + (id)databaseWithPath:(NSString*)inPath
 {
-    return [[[SLDatabase alloc] initWithPath:inPath] autorelease];
+    return [[[self alloc] initWithPath:inPath] autorelease];
 }
 
 - (id)initWithPath:(NSString*)inPath
