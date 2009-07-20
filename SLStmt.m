@@ -205,4 +205,15 @@
 	return self;
 }
 
+- (SLStmt*)bindData:(NSData*)value
+		   forIndex:(int)index {
+	[self setResult:sqlite3_bind_blob( _stmt, index+1, [value bytes], [value length], SQLITE_TRANSIENT )];
+	return self;
+}
+
+- (SLStmt*)bindData:(NSData*)value {
+	[self bindData:value forIndex:_bind++];
+}
+
+
 @end

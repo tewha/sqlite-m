@@ -114,4 +114,12 @@
 /** Bind string to a compiled statement and advance to next bind point. */
 - (SLStmt*)bindString:(NSString*)value;
 
+/** Bind blob to a compiled statement.
+ @note index is 0-based */
+- (SLStmt*)bindData:(NSData*)value
+		   forIndex:(int)index;
+
+/** Bind blob to a compiled statement and advance to next bind point. */
+- (SLStmt*)bindData:(NSData*)value;
+
 @end
