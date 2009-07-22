@@ -38,4 +38,6 @@
 
 - (BOOL)exec:(NSString*)sql;
 
+- (long long)lastInserted;
+
 @end

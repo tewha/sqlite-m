@@ -55,4 +55,10 @@
 	return _err == SQLITE_OK;
 }
 
+- (long long)lastInserted
+{
+	return sqlite3_last_insert_rowid(_dtbs);
+}
+
+
 @end
