@@ -217,4 +217,19 @@
 }
 
 
+- (SLStmt*)bindDate:(NSDate*)value
+		   forIndex:(int)index {
+	NSDateFormatter *formatter = [[[NSDateFormatter alloc] init] autorelease];
+	[formatter setDateFormat: @"yyyy-MM-dd HH:mm:ss"];
+	return [self bindString: [formatter stringFromDate: value]
+				   forIndex: index];
+
+}
+
+- (SLStmt*)bindDate:(NSDate*)value {
+	return [self bindDate: value
+				 forIndex: _bind++];
+}
+
+
 @end

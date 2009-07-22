@@ -122,4 +122,12 @@
 /** Bind blob to a compiled statement and advance to next bind point. */
 - (SLStmt*)bindData:(NSData*)value;
 
+/** Bind date to a compiled statement.
+ @note index is 0-based */
+- (SLStmt*)bindDate:(NSDate*)value
+		   forIndex:(int)index;
+
+/** Bind date to a compiled statement and advance to next bind point. */
+- (SLStmt*)bindDate:(NSDate*)value;
+
 @end
