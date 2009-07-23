@@ -88,10 +88,21 @@
 	return _stmt;
 }
 
-- (SLStmt*)step {
+- (void)step {
 	[self setResult: sqlite3_step( _stmt )];
 	_column = 0;
-	return ( [self simpleErr] == SQLITE_ROW ) ? self : nil;
+}
+
+- (BOOL)stepHasRow {
+	[self step];
+	return [self simpleErr] == SQLITE_ROW;
+}
+
+- (BOOL)stepOverRows {
+	do {
+		[self step];
+	} while ([self simpleErr] == SQLITE_ROW);
+	return [self simpleErr] == SQLITE_DONE;
 }
 
 - (long long)columnCount {

@@ -60,7 +60,14 @@
 - (SLStmt*)close;
 
 /** Step to next result row. Rewinds to first column. */
-- (SLStmt*)step;
+- (void)step;
+
+/** Step, return YES if a row was found. */
+- (BOOL)stepHasRow;
+
+/** Step over all rows.
+    Returns YES if done, NO if something an error occurs. */
+- (BOOL)stepOverRows;
 
 /** Get the number of columns in the result set. */
 - (long long)columnCount;
