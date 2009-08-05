@@ -52,8 +52,7 @@
 /** Compile next SQL query. Rewinds to first bind point. */
 - (SLStmt*)prepareNext;
 
-/** Reset current statement.
- sa sqlite3_reset */
+/** Reset current statement. */
 - (SLStmt*)reset;
 
 /** Finalizes a query, closing it in sqlite library. */
@@ -62,11 +61,15 @@
 /** Step to next result row. Rewinds to first column. */
 - (void)step;
 
-/** Step, return YES if a row was found. */
+/** Step, return YES if a row was found.
+ 
+ @seealso stepOverRows */
 - (BOOL)stepHasRow;
 
 /** Step over all rows.
-    Returns YES if done, NO if something an error occurs. */
+ Returns YES if done (regardless of whether a row was actually found), NO if an error occurs.
+ 
+ @seealso stepHasRow */
 - (BOOL)stepOverRows;
 
 /** Get the number of columns in the result set. */
