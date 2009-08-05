@@ -243,4 +243,8 @@
 }
 
 
+- (int)findBinding: (NSString*)name {
+	return sqlite3_bind_parameter_index( _stmt, [name UTF8String]) - 1;
+}
+
 @end

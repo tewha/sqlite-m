@@ -137,4 +137,7 @@
 /** Bind date to a compiled statement and advance to next bind point. */
 - (SLStmt*)bindDate:(NSDate*)value;
 
+/** Find bind point with name. */
+- (int)findBinding: (NSString*)name;
+
 @end
