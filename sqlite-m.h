@@ -9,6 +9,7 @@
 
 #import "SLStmt.h"
 #import "SLDatabase.h"
+#import "SLExtensions.h"
 
 /** @mainpage sqlite-m
  sqlite-m is a collection of Objective-C wrapper classes for various sqlite3
