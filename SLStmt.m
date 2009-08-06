@@ -15,7 +15,7 @@
 @synthesize extendedErr=_err, stmt=_stmt;
 @dynamic stmt, currentSql, simpleErr, extendedErr;
 
--  (NSString*)currentSql {
+- (NSString*)currentSql {
 	
 	intptr_t length = (intptr_t)_nextSql - (intptr_t)_thisSql;
 	NSMutableData *data = [NSMutableData dataWithCapacity: length+1];
@@ -39,7 +39,7 @@
 
 + (id)stmtWithDatabase: (SLDatabase*)database
 				   sql: (NSString*)sql {
-    return [[[self alloc] initWithDatabase: database
+	return [[[self alloc] initWithDatabase: database
 									   sql: sql] autorelease];
 }
 
