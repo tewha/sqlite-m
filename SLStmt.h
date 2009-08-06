@@ -24,7 +24,7 @@
 	int _column;
 	NSString *_sql;
 	const char *_msg;
-	const char *_nextSql;
+	const char *_thisSql, *_nextSql;
 }
 
 /** Pointer to sqlite3_stmt. */
@@ -35,6 +35,9 @@
 
 /** Return result of last command. */
 @property (readonly) int extendedErr;
+
+/** Currently executing SQL. */
+@property (readonly) NSString *currentSql;
 
 /** Create a new, auto-released statement. */
 + (id)stmtWithDatabase:(SLDatabase*)database

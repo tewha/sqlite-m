@@ -13,6 +13,18 @@
 @implementation SLStmt
 
 @synthesize extendedErr=_err, stmt=_stmt;
+@dynamic stmt, currentSql, simpleErr, extendedErr;
+
+-  (NSString*)currentSql {
+	
+	intptr_t length = (intptr_t)_nextSql - (intptr_t)_thisSql;
+	NSMutableData *data = [NSMutableData dataWithCapacity: length+1];
+	[data appendBytes: _thisSql length: length];
+	
+	const int zero = 0;
+	[data appendBytes: &zero length: sizeof(zero)];
+	return [NSString stringWithUTF8String: [data bytes]];
+}
 
 - (int)simpleErr {
 	return _err & 0xFF;
@@ -52,7 +64,8 @@
 	[self close];
 	[_sql release];
 	_sql = sql;
-	[self setResult: sqlite3_prepare_v2([_database dtbs], [_sql UTF8String], -1, &_stmt, &_nextSql)];
+	_thisSql = [_sql UTF8String];
+	[self setResult: sqlite3_prepare_v2([_database dtbs], _thisSql, -1, &_stmt, &_nextSql)];
 	_bind = 0;
 	return self;
 }
@@ -60,6 +73,7 @@
 - (SLStmt*)prepareNext {
 	if ( ( _nextSql == NULL ) || ( *_nextSql == 0 ) )
 		return nil;
+	_thisSql = _nextSql;
 	[self setResult: sqlite3_prepare_v2([_database dtbs], _nextSql, -1, &_stmt, &_nextSql)];
 	return self;
 }
