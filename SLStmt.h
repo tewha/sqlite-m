@@ -19,7 +19,7 @@
 @interface SLStmt : NSObject {
 	SLDatabase *_database;
 	sqlite3_stmt *_stmt;
-	int _err;
+	int _err, _simpleErr;
 	int _bind;
 	int _column;
 	NSString *_sql, *_currentSql;

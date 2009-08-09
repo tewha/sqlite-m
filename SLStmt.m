@@ -12,8 +12,8 @@
 
 @implementation SLStmt
 
-@synthesize extendedErr=_err, stmt=_stmt;
-@dynamic stmt, currentSql, simpleErr, extendedErr, currentSql;
+@synthesize extendedErr=_err, stmt=_stmt, simpleErr=_simpleErr;
+@dynamic stmt, currentSql, extendedErr, currentSql;
 
 - (void)updateCurrentSql {
 	intptr_t length = (intptr_t)_nextSql - (intptr_t)_thisSql;
@@ -27,12 +27,9 @@
 	_currentSql = [[NSString stringWithUTF8String: [data bytes]] retain];
 }
 
-- (int)simpleErr {
-	return _err & 0xFF;
-}
-
 - (void)setResult: (int)err {
 	_err = err;
+	_simpleErr = err & 0xFF;
 	_msg = sqlite3_errmsg([_database dtbs]);
 	if ( ( _err != SQLITE_OK ) && ( self.simpleErr < 100 ) )
 		NSLog( @"SLStmt: (%d) %s", _err, _msg );
