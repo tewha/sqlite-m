@@ -15,7 +15,7 @@
 @synthesize extendedErr=_err, stmt=_stmt;
 @dynamic stmt, currentSql, simpleErr, extendedErr, currentSql;
 
-- (NSString*)updateCurrentSql {
+- (void)updateCurrentSql {
 	intptr_t length = (intptr_t)_nextSql - (intptr_t)_thisSql;
 	NSMutableData *data = [NSMutableData dataWithCapacity: length+1];
 	[data appendBytes: _thisSql length: length];
