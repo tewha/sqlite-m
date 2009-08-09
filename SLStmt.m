@@ -242,6 +242,23 @@
 }
 
 
+- (NSArray*)bindDictionary:(NSDictionary*)bindings {
+	id accepted = [NSMutableArray arrayWithCapacity: bindings.count];
+	NSArray *keys = [bindings allKeys];
+	for (NSString *key in keys) {
+		NSInteger bindIndex = [self findBinding: key];
+		if ( bindIndex < 0 ) {
+			continue;
+		}
+		id value = [bindings valueForKey: key];
+		[accepted addObject: key];
+		[self bindString: value
+				forIndex: bindIndex];
+	}
+	return [NSArray arrayWithArray: accepted];
+}
+
+
 - (int)findBinding: (NSString*)name {
 	return sqlite3_bind_parameter_index( _stmt, [name UTF8String]) - 1;
 }

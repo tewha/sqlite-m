@@ -135,6 +135,10 @@
 /** Bind blob to a compiled statement and advance to next bind point. */
 - (SLStmt*)bindData:(NSData*)value;
 
+/** Bind all key-values in a dictionary that match bind points.
+ Returns keys of matched bound points. */
+- (NSArray*)bindDictionary:(NSDictionary*)bindings;
+
 /** Find bind point with name. */
 - (int)findBinding: (NSString*)name;
 
