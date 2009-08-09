@@ -30,7 +30,7 @@
 	_err = err;
 	_simpleErr = err & 0xFF;
 	_msg = sqlite3_errmsg([_database dtbs]);
-	if ( ( simpleErr != SQLITE_OK ) && ( simpleErr < 100 ) )
+	if ( ( _simpleErr != SQLITE_OK ) && ( _simpleErr < 100 ) )
 		NSLog( @"SLStmt: (%d) %s", _err, _msg );
 }
 
