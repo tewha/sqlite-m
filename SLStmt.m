@@ -112,14 +112,14 @@
 
 - (BOOL)stepHasRow {
 	[self step];
-	return [self simpleErr] == SQLITE_ROW;
+	return ( _simpleErr == SQLITE_ROW );
 }
 
 - (BOOL)stepOverRows {
 	do {
 		[self step];
-	} while ([self simpleErr] == SQLITE_ROW);
-	return [self simpleErr] == SQLITE_DONE;
+	} while ( _simpleErr == SQLITE_ROW);
+	return ( _simpleErr == SQLITE_DONE );
 }
 
 - (NSArray*)columnNames {
