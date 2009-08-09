@@ -71,7 +71,7 @@
 	[self setResult: sqlite3_prepare_v2([_database dtbs], _thisSql, -1, &_stmt, &_nextSql)];
 	[self updateCurrentSql];
 	_bind = 0;
-	return self;
+	return _stmt ? self : nil;
 }
 
 - (SLStmt*)prepareNext {
@@ -80,7 +80,7 @@
 	_thisSql = _nextSql;
 	[self setResult: sqlite3_prepare_v2([_database dtbs], _nextSql, -1, &_stmt, &_nextSql)];
 	[self updateCurrentSql];
-	return self;
+	return _stmt ? self : nil;
 }
 
 - (SLStmt*)reset {
