@@ -13,17 +13,18 @@
 @implementation SLStmt
 
 @synthesize extendedErr=_err, stmt=_stmt;
-@dynamic stmt, currentSql, simpleErr, extendedErr;
+@dynamic stmt, currentSql, simpleErr, extendedErr, currentSql;
 
-- (NSString*)currentSql {
-	
+- (NSString*)updateCurrentSql {
 	intptr_t length = (intptr_t)_nextSql - (intptr_t)_thisSql;
 	NSMutableData *data = [NSMutableData dataWithCapacity: length+1];
 	[data appendBytes: _thisSql length: length];
 	
 	const int zero = 0;
 	[data appendBytes: &zero length: sizeof(zero)];
-	return [NSString stringWithUTF8String: [data bytes]];
+	
+	[_currentSql release];
+	_currentSql = [[NSString stringWithUTF8String: [data bytes]] retain];
 }
 
 - (int)simpleErr {
@@ -55,6 +56,8 @@
 - (void)dealloc {
 	[self close];
 	[_sql release];
+	[_currentSql release];
+	_currentSql = nil;
 	[_database release];
 	[super dealloc];
 }
@@ -66,6 +69,7 @@
 	_sql = sql;
 	_thisSql = [_sql UTF8String];
 	[self setResult: sqlite3_prepare_v2([_database dtbs], _thisSql, -1, &_stmt, &_nextSql)];
+	[self updateCurrentSql];
 	_bind = 0;
 	return self;
 }
@@ -75,6 +79,7 @@
 		return nil;
 	_thisSql = _nextSql;
 	[self setResult: sqlite3_prepare_v2([_database dtbs], _nextSql, -1, &_stmt, &_nextSql)];
+	[self updateCurrentSql];
 	return self;
 }
 
@@ -94,6 +99,8 @@
 		if ( err != SQLITE_OK )
 			NSLog( @"Error %d while finalizing query as part of close.", err );
 		_stmt = NULL;
+		[_currentSql release];
+		_currentSql = nil;
 	}
 	return self;
 }
@@ -120,8 +127,9 @@
 }
 
 - (NSArray*)columnNames {
-	id columns = [NSMutableArray arrayWithArray: sqlite3_column_count( _stmt )];
-	for (int i = 0, j = [columns count]; i < j; i++ ) {
+	int columnCount = sqlite3_column_count( _stmt );
+	id columns = [NSMutableArray arrayWithCapacity: columnCount];
+	for (int i = 0; i < columnCount; i++ ) {
 		const char *name = sqlite3_column_name( _stmt, i);
 		[columns addObject: [NSString stringWithUTF8String: name]];
 	}

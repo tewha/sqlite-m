@@ -22,9 +22,8 @@
 	int _err;
 	int _bind;
 	int _column;
-	NSString *_sql;
-	const char *_msg;
-	const char *_thisSql, *_nextSql;
+	NSString *_sql, *_currentSql;
+	const char *_msg, *_thisSql, *_nextSql;
 }
 
 /** Pointer to sqlite3_stmt. */
