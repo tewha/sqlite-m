@@ -12,8 +12,7 @@
 
 @implementation SLStmt
 
-@synthesize extendedErr=_err, stmt=_stmt, simpleErr=_simpleErr;
-@dynamic stmt, currentSql, extendedErr, currentSql;
+@synthesize extendedErr=_err, stmt=_stmt, simpleErr=_simpleErr, currentSql=_currentSql;
 
 - (void)updateCurrentSql {
 	intptr_t length = (intptr_t)_nextSql - (intptr_t)_thisSql;
