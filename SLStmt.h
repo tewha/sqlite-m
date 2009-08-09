@@ -75,6 +75,9 @@
  @seealso stepHasRow */
 - (BOOL)stepOverRows;
 
+/** Get a all column names. */
+- (NSArray*)columnNames;
+
 /** Get the number of columns in the result set. */
 - (long long)columnCount;
 

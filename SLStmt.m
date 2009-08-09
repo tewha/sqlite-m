@@ -119,6 +119,15 @@
 	return [self simpleErr] == SQLITE_DONE;
 }
 
+- (NSArray*)columnNames {
+	id columns = [NSMutableArray arrayWithArray: sqlite3_column_count( _stmt )];
+	for (int i = 0, j = [columns count]; i < j; i++ ) {
+		const char *name = sqlite3_column_name( _stmt, i);
+		[columns addObject: [NSString stringWithUTF8String: name]];
+	}
+	return [NSArray arrayWithArray: columns];
+}
+
 - (long long)columnCount {
 	return sqlite3_column_count( _stmt );
 }
@@ -243,6 +252,8 @@
 
 
 - (NSArray*)bindDictionary:(NSDictionary*)bindings {
+	if (bindings == nil)
+		return nil;
 	id accepted = [NSMutableArray arrayWithCapacity: bindings.count];
 	NSArray *keys = [bindings allKeys];
 	for (NSString *key in keys) {
