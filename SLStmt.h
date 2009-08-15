@@ -28,7 +28,7 @@
 @property (readonly) sqlite3_stmt *stmt;
 
 /** Currently executing SQL. */
-@property (readonly) NSString *currentSql;
+@property (readonly) NSString *currentSQL;
 
 /** Create a new, auto-released statement. */
 + (id)stmtWithDatabase: (SLDatabase *)inDatabase;
