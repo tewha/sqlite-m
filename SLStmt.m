@@ -14,28 +14,22 @@
 
 @synthesize stmt=stmt, currentSql=currentSQL;
 
-- (NSError *)errorWithCode: (NSInteger)inErrorCode {
-	int simpleError = inErrorCode & 0xFF;
-	if ( ( simpleError != SQLITE_OK ) && ( simpleError < 100 ) ) {
-		const char *msg = sqlite3_errmsg([database dtbs]);
-		return [NSError errorWithDomain: @"sqlite"
-								   code: simpleError
-							   userInfo: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithLongLong: inErrorCode], @"Code",
-										  [NSString stringWithUTF8String: msg], @"Message", nil]];
-	} else {
-		return nil;
-	}
-}
-
 
 - (BOOL)setResult: (int)err
 			error: (NSError **)outError {
 	errorCode = (err & 0xFF);
-	NSError *theError = [self errorWithCode: err];
+	NSError *theError = nil;
+	if ( ( errorCode != SQLITE_OK ) && ( errorCode < 100 ) ) {
+		const char *msg = sqlite3_errmsg([database dtbs]);
+		theError = [NSError errorWithDomain: @"sqlite"
+									   code: errorCode
+								   userInfo: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithLongLong: err], @"Code",
+											  [NSString stringWithUTF8String: msg], @"Message", nil]];
+	}
 	if (outError) {
 		*outError = theError;
 	}
-	return (errorCode == SQLITE_OK) || (errorCode >= 100);
+	return (theError == nil);
 }
 
 
