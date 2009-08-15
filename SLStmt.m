@@ -14,7 +14,7 @@
 
 @synthesize stmt=stmt, currentSql=currentSQL;
 
-- (NSError*)errorWithCode: (NSInteger)inErrorCode {
+- (NSError *)errorWithCode: (NSInteger)inErrorCode {
 	int simpleError = inErrorCode & 0xFF;
 	if ( ( simpleError != SQLITE_OK ) && ( simpleError < 100 ) ) {
 		const char *msg = sqlite3_errmsg([database dtbs]);
@@ -29,7 +29,7 @@
 
 
 - (void)setResult: (int)err
-			error: (NSError**)outError {
+			error: (NSError **)outError {
 	errorCode = (err & 0xFF);
 	NSError *theError = [self errorWithCode: err];
 	if (outError) {
@@ -38,12 +38,12 @@
 }
 
 
-+ (id)stmtWithDatabase: (SLDatabase*)inDatabase {
++ (id)stmtWithDatabase: (SLDatabase *)inDatabase {
 	return [[[self alloc] initWithDatabase: inDatabase] autorelease];
 }
 
 
-- (id)initWithDatabase: (SLDatabase*)inDatabase {
+- (id)initWithDatabase: (SLDatabase *)inDatabase {
 	self = [super init];
 	if (!self) return self;
 	database = [inDatabase retain];
@@ -74,8 +74,8 @@
 }
 
 
-- (BOOL)prepareSQL: (NSString*)inSQL
-			 error: (NSError**)outError {
+- (BOOL)prepareSQL: (NSString *)inSQL
+			 error: (NSError **)outError {
 	[inSQL retain];
 	NSError *error;
 	[self closeWithError: &error];
@@ -89,7 +89,7 @@
 	return (errorCode == SQLITE_OK);
 }
 
-- (BOOL)prepareNextWithError: (NSError**)outError {
+- (BOOL)prepareNextWithError: (NSError **)outError {
 	if ( ( nextSQL == NULL ) || ( *nextSQL == 0 ) )
 		return NO;
 	thisSQL = nextSQL;
@@ -99,7 +99,7 @@
 	return (errorCode == SQLITE_OK);
 }
 
-- (BOOL)resetWithError: (NSError**)outError {
+- (BOOL)resetWithError: (NSError **)outError {
 	if ( !stmt ) {
 		return NO;
 	}
@@ -111,7 +111,7 @@
 }
 
 
-- (BOOL)closeWithError: (NSError**)outError {
+- (BOOL)closeWithError: (NSError **)outError {
 	BOOL ok = YES;
 	if ( stmt ) {
 		[self setResult: sqlite3_finalize( stmt )
@@ -127,21 +127,21 @@
 	return stmt;
 }
 
-- (BOOL)stepWithError: (NSError**)outError {
+- (BOOL)stepWithError: (NSError **)outError {
 	column = 0;
 	[self setResult: sqlite3_step( stmt )
 			  error: outError];
 	return ( ( errorCode == SQLITE_ROW ) | (errorCode == SQLITE_DONE ) );
 }
 
-- (BOOL)stepHasRowWithError: (NSError**)outError {
+- (BOOL)stepHasRowWithError: (NSError **)outError {
 	column = 0;
 	[self setResult: sqlite3_step( stmt )
 			  error: outError];
 	return ( errorCode == SQLITE_ROW );
 }
 
-- (BOOL)stepOverRowsWithError: (NSError**)outError {
+- (BOOL)stepOverRowsWithError: (NSError **)outError {
 	column = 0;
 	do {
 		[self setResult: sqlite3_step( stmt )
@@ -150,7 +150,7 @@
 	return ( errorCode == SQLITE_DONE );
 }
 
-- (NSArray*)columnNames {
+- (NSArray *)columnNames {
 	int columnCount = sqlite3_column_count( stmt );
 	id columns = [NSMutableArray arrayWithCapacity: columnCount];
 	for (int i = 0; i < columnCount; i++ ) {
@@ -164,14 +164,14 @@
 	return sqlite3_column_count( stmt );
 }
 
-- (NSString*)columnName: (int)inColumn {
+- (NSString *)columnName: (int)inColumn {
 	const char *text = sqlite3_column_name( stmt, inColumn );
 	if ( text == NULL )
 		return nil;
 	return [NSString stringWithUTF8String: text];
 }
 
-- (NSString*)columnName {
+- (NSString *)columnName {
 	const char *text = sqlite3_column_name( stmt, column );
 	if ( text == NULL )
 		return nil;
@@ -186,14 +186,14 @@
 	return [self longLongValue: column++];
 }
 
-- (NSString*)stringValue: (int)inColumn {
+- (NSString *)stringValue: (int)inColumn {
 	const char *text = (char*)sqlite3_column_text( stmt, inColumn);
 	if ( text == NULL )
 		return nil;
 	return [NSString stringWithUTF8String: text];
 }
 
-- (NSString*)stringValue {
+- (NSString *)stringValue {
 	const char *text = (char*)sqlite3_column_text( stmt, column++);
 	if ( text == NULL )
 		return nil;
@@ -233,7 +233,7 @@
 	return [self value: column++];
 }
 
-- (NSDictionary*)allValues {
+- (NSDictionary *)allValues {
 	NSMutableDictionary *temp_values = [[NSMutableDictionary alloc] init];
 	int n = [self columnCount];
 	for ( int i = 0; i < n; i++ ) {
@@ -251,53 +251,53 @@
 
 - (BOOL)bindLongLong: (long long)value
 			forIndex: (int)index
-			   error: (NSError**)outError {
+			   error: (NSError **)outError {
 	[self setResult: sqlite3_bind_int64( stmt, index+1, value )
 			  error: outError];
 	return ( errorCode = SQLITE_OK );
 }
 
 - (BOOL)bindLongLong: (long long)value
-			   error: (NSError**)outError {
+			   error: (NSError **)outError {
 	return [self bindLongLong: value
 					 forIndex: bind++
 						error: outError];
 }
 
-- (BOOL)bindString: (NSString*)value
+- (BOOL)bindString: (NSString *)value
 		  forIndex: (int)index
-			 error: (NSError**)outError {
+			 error: (NSError **)outError {
 	[self setResult: sqlite3_bind_text( stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )
 			  error: outError];
 	return ( errorCode = SQLITE_OK );
 	
 }
 
-- (BOOL)bindString: (NSString*)value
-			 error: (NSError**)outError {
+- (BOOL)bindString: (NSString *)value
+			 error: (NSError **)outError {
 	return [self bindString: value
 				   forIndex: bind++
 					  error: outError];
 }
 
-- (BOOL)bindData: (NSData*)value
+- (BOOL)bindData: (NSData *)value
 		forIndex: (int)index
-		   error: (NSError**)outError {
+		   error: (NSError **)outError {
 	[self setResult: sqlite3_bind_blob( stmt, index+1, [value bytes], [value length], SQLITE_TRANSIENT )
 			  error: outError];
 	return ( errorCode = SQLITE_OK );
 	
 }
 
-- (BOOL)bindData: (NSData*)value
-		   error: (NSError**)outError {
+- (BOOL)bindData: (NSData *)value
+		   error: (NSError **)outError {
 	return [self bindData: value
 				 forIndex: bind++
 					error: outError];
 }
 
 
-- (NSArray*)bindDictionary: (NSDictionary*)bindings {
+- (NSArray *)bindDictionary: (NSDictionary *)bindings {
 	if (bindings == nil)
 		return nil;
 	id accepted = [NSMutableArray arrayWithCapacity: bindings.count];
@@ -317,7 +317,7 @@
 }
 
 
-- (int)findBinding: (NSString*)name {
+- (int)findBinding: (NSString *)name {
 	return sqlite3_bind_parameter_index( stmt, [name UTF8String]) - 1;
 }
 

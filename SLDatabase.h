@@ -31,12 +31,12 @@
 @property (readonly) int simpleErr;
 
 /** Allocate a new, autoreleased SLDatabase. */
-+ (id)databaseWithPath:(NSString*)inPath;
++ (id)databaseWithPath: (NSString *)inPath;
 
 /** Initialize a new SLDatabase. */
-- (id)initWithPath:(NSString*)inPath;
+- (id)initWithPath: (NSString *)inPath;
 
-- (BOOL)exec:(NSString*)sql;
+- (BOOL)exec: (NSString *)sql;
 
 - (long long)lastInserted;
 

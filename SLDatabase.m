@@ -19,7 +19,7 @@
 	return _err & 0xFF;
 }
 
-- (void)setResult:(int)err
+- (void)setResult: (int)err
 {
 	_err = err;
 	_msg = sqlite3_errmsg(_dtbs);
@@ -27,12 +27,12 @@
 		NSLog( @"SLDatabase: (%d) %s", _err, _msg );
 }
 
-+ (id)databaseWithPath:(NSString*)inPath
++ (id)databaseWithPath: (NSString *)inPath
 {
     return [[[self alloc] initWithPath:inPath] autorelease];
 }
 
-- (id)initWithPath:(NSString*)inPath
+- (id)initWithPath: (NSString *)inPath
 {
 	self = [super init];
 	if (!self) return self;
@@ -49,7 +49,7 @@
 	[super dealloc];
 }
 
-- (BOOL)exec:(NSString*)sql
+- (BOOL)exec: (NSString *)sql
 {
 	[self setResult:sqlite3_exec(_dtbs, [sql UTF8String], NULL, NULL, NULL)];
 	return _err == SQLITE_OK;
