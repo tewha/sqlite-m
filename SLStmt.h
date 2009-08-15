@@ -72,25 +72,25 @@
 - (long long)columnCount;
 
 /** Get a specifc column's name. */
-- (NSString *)columnName: (int)column;
+- (NSString *)columnName: (int)inColumn;
 
 /** Get column name of the current column. */
 - (NSString *)columnName;
 
 /** Get a specific column's contents as int64. */
-- (long long)longLongValue: (int)column;
+- (long long)longLongValue: (int)inColumn;
 
 /** Get current column's contents as int64 and advance to next column. */
 - (long long)longLongValue;
 
 /** Get a specific column's contents as NSString. */
-- (NSString *)stringValue: (int)column;
+- (NSString *)stringValue: (int)inColumn;
 
 /** Get current column's contents as NSString and advance to next column. */
 - (NSString *)stringValue;
 
 /** Get a specific column's contents as NSString, NSNumber or NSBlob. */
-- (id)value: (int)column;
+- (id)value: (int)inColumn;
 
 /** Get current column's contents as NSString, NSNumber or NSBlob and advance to next column. */
 - (id)value;
@@ -99,7 +99,7 @@
 - (NSDictionary *)allValues;
 
 /** Get a specific column's type. */
-- (int)columnType: (int)column;
+- (int)columnType: (int)inColumn;
 
 /** Get current column's type. Does not advance to next column. */
 - (int)columnType;
