@@ -28,13 +28,14 @@
 }
 
 
-- (void)setResult: (int)err
+- (BOOL)setResult: (int)err
 			error: (NSError **)outError {
 	errorCode = (err & 0xFF);
 	NSError *theError = [self errorWithCode: err];
 	if (outError) {
 		*outError = theError;
 	}
+	return (errorCode == SQLITE_OK) || (errorCode >= 100);
 }
 
 
