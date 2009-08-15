@@ -39,12 +39,10 @@
 @property (readonly) NSString *currentSql;
 
 /** Create a new, auto-released statement. */
-+ (id)stmtWithDatabase:(SLDatabase*)database
-				   sql:(NSString*)sql;
++ (id)stmtWithDatabase:(SLDatabase*)database;
 
 /** Create a statement. */
-- (id)initWithDatabase:(SLDatabase*)database
-				   sql:(NSString*)sql;
+- (id)initWithDatabase:(SLDatabase*)database;
 
 - (void)dealloc;
 

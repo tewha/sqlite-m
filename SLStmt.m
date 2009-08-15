@@ -34,18 +34,14 @@
 		NSLog( @"SLStmt: (%d) %s", _err, _msg );
 }
 
-+ (id)stmtWithDatabase: (SLDatabase*)database
-				   sql: (NSString*)sql {
-	return [[[self alloc] initWithDatabase: database
-									   sql: sql] autorelease];
++ (id)stmtWithDatabase: (SLDatabase*)database {
+	return [[[self alloc] initWithDatabase: database] autorelease];
 }
 
-- (id)initWithDatabase: (SLDatabase*)database
-				   sql: (NSString*)sql {
+- (id)initWithDatabase: (SLDatabase*)database {
 	self = [super init];
 	if (!self) return self;
 	_database = [database retain];
-	[self prepareSql: sql];
 	return self;
 }
 
