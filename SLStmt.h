@@ -19,21 +19,13 @@
 @interface SLStmt : NSObject {
 	SLDatabase *_database;
 	sqlite3_stmt *_stmt;
-	int _err, _simpleErr;
-	int _bind;
-	int _column;
+	int _bind, _column, _errorCode;
 	NSString *_sql, *_currentSql;
-	const char *_msg, *_thisSql, *_nextSql;
+	const char *_thisSql, *_nextSql;
 }
 
 /** Pointer to sqlite3_stmt. */
 @property (readonly) sqlite3_stmt *stmt;
-
-/** Return result of last command. */
-@property (readonly) int simpleErr;
-
-/** Return result of last command. */
-@property (readonly) int extendedErr;
 
 /** Currently executing SQL. */
 @property (readonly) NSString *currentSql;
@@ -47,30 +39,31 @@
 - (void)dealloc;
 
 /** Compile a SQL query into a prepared statement. Rewinds to first bind point. */
-- (SLStmt*)prepareSql:(NSString*)sql;
+- (BOOL)prepareSql:(NSString*)sql
+			 error: (NSError**)outError;
 
 /** Compile next SQL query. Rewinds to first bind point. */
-- (SLStmt*)prepareNext;
+- (BOOL)prepareNextWithError: (NSError**)outError;
 
 /** Reset current statement. */
-- (SLStmt*)reset;
+- (BOOL)resetWithError: (NSError**)outError;
 
 /** Finalizes a query, closing it in sqlite library. */
-- (SLStmt*)close;
+- (BOOL)closeWithError: (NSError**)outError;
 
 /** Step to next result row. Rewinds to first column. */
-- (void)step;
+- (BOOL)stepWithError: (NSError**)outError;
 
 /** Step, return YES if a row was found.
  
  @seealso stepOverRows */
-- (BOOL)stepHasRow;
+- (BOOL)stepHasRowWithError: (NSError**)outError;
 
 /** Step over all rows.
  Returns YES if done (regardless of whether a row was actually found), NO if an error occurs.
  
  @seealso stepHasRow */
-- (BOOL)stepOverRows;
+- (BOOL)stepOverRowsWithError: (NSError**)outError;
 
 /** Get a all column names. */
 - (NSArray*)columnNames;
@@ -113,27 +106,33 @@
 
 /** Bind int64 to a compiled statement.
  @note index is 0-based */
-- (SLStmt*)bindLongLong:(long long)value
-			   forIndex:(int)index;
+- (BOOL)bindLongLong:(long long)value
+			forIndex:(int)index
+			   error:(NSError**)outError;
 
 /** Bind int64 to a compiled statement and advance to next bind point. */
-- (SLStmt*)bindLongLong:(long long)value;
+- (BOOL)bindLongLong:(long long)value
+			   error: (NSError**)outError;
 
 /** Bind string to a compiled statement.
  @note index is 0-based */
-- (SLStmt*)bindString:(NSString*)value
-			 forIndex:(int)index;
+- (BOOL)bindString:(NSString*)value
+		  forIndex:(int)index
+			 error: (NSError**)outError;
 
 /** Bind string to a compiled statement and advance to next bind point. */
-- (SLStmt*)bindString:(NSString*)value;
+- (BOOL)bindString:(NSString*)value
+			 error: (NSError**)outError;
 
 /** Bind blob to a compiled statement.
  @note index is 0-based */
-- (SLStmt*)bindData:(NSData*)value
-		   forIndex:(int)index;
+- (BOOL)bindData:(NSData*)value
+		forIndex:(int)index
+		   error: (NSError**)outError;
 
 /** Bind blob to a compiled statement and advance to next bind point. */
-- (SLStmt*)bindData:(NSData*)value;
+- (BOOL)bindData:(NSData*)value
+		   error: (NSError**)outError;
 
 /** Bind all key-values in a dictionary that match bind points.
  Returns keys of matched bound points. */

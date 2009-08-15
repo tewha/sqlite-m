@@ -12,7 +12,54 @@
 
 @implementation SLStmt
 
-@synthesize extendedErr=_err, stmt=_stmt, simpleErr=_simpleErr, currentSql=_currentSql;
+@synthesize stmt=_stmt, currentSql=_currentSql;
+
+- (NSError*)errorWithCode: (NSInteger)errorCode {
+	int simpleError = errorCode & 0xFF;
+	if ( ( simpleError != SQLITE_OK ) && ( simpleError < 100 ) ) {
+		const char *msg = sqlite3_errmsg([_database dtbs]);
+		return [NSError errorWithDomain: @"sqlite"
+								   code: simpleError
+							   userInfo: [NSDictionary dictionaryWithObjectsAndKeys: [NSNumber numberWithLongLong: errorCode], @"Code",
+										  [NSString stringWithUTF8String: msg], @"Message", nil]];
+	} else {
+		return nil;
+	}
+}
+
+
+- (void)setResult: (int)err
+			error: (NSError**)outError {
+	_errorCode = (err & 0xFF);
+	NSError *theError = [self errorWithCode: err];
+	if (outError) {
+		*outError = theError;
+	}
+}
+
+
++ (id)stmtWithDatabase: (SLDatabase*)database {
+	return [[[self alloc] initWithDatabase: database] autorelease];
+}
+
+
+- (id)initWithDatabase: (SLDatabase*)database {
+	self = [super init];
+	if (!self) return self;
+	_database = [database retain];
+	return self;
+}
+
+- (void)dealloc {
+	NSError *error;
+	[self closeWithError: &error];
+	[_sql release];
+	[_currentSql release];
+	_currentSql = nil;
+	[_database release];
+	[super dealloc];
+}
+
 
 - (void)updateCurrentSql {
 	intptr_t length = (intptr_t)_nextSql - (intptr_t)_thisSql;
@@ -26,96 +73,81 @@
 	_currentSql = [[NSString stringWithUTF8String: [data bytes]] retain];
 }
 
-- (void)setResult: (int)err {
-	_err = err;
-	_simpleErr = err & 0xFF;
-	_msg = sqlite3_errmsg([_database dtbs]);
-	if ( ( _simpleErr != SQLITE_OK ) && ( _simpleErr < 100 ) )
-		NSLog( @"SLStmt: (%d) %s", _err, _msg );
-}
 
-+ (id)stmtWithDatabase: (SLDatabase*)database {
-	return [[[self alloc] initWithDatabase: database] autorelease];
-}
-
-- (id)initWithDatabase: (SLDatabase*)database {
-	self = [super init];
-	if (!self) return self;
-	_database = [database retain];
-	return self;
-}
-
-- (void)dealloc {
-	[self close];
-	[_sql release];
-	[_currentSql release];
-	_currentSql = nil;
-	[_database release];
-	[super dealloc];
-}
-
-- (SLStmt*)prepareSql: (NSString*)sql {
+- (BOOL)prepareSql: (NSString*)sql
+			 error: (NSError**)outError {
 	[sql retain];
-	[self close];
+	NSError *error;
+	[self closeWithError: &error];
 	[_sql release];
 	_sql = sql;
 	_thisSql = [_sql UTF8String];
-	[self setResult: sqlite3_prepare_v2([_database dtbs], _thisSql, -1, &_stmt, &_nextSql)];
+	[self setResult: sqlite3_prepare_v2([_database dtbs], _thisSql, -1, &_stmt, &_nextSql)
+			  error: outError];
 	[self updateCurrentSql];
 	_bind = 0;
-	return _stmt ? self : nil;
+	return (_errorCode == SQLITE_OK);
 }
 
-- (SLStmt*)prepareNext {
+- (BOOL)prepareNextWithError: (NSError**)outError {
 	if ( ( _nextSql == NULL ) || ( *_nextSql == 0 ) )
-		return nil;
+		return NO;
 	_thisSql = _nextSql;
-	[self setResult: sqlite3_prepare_v2([_database dtbs], _nextSql, -1, &_stmt, &_nextSql)];
+	[self setResult: sqlite3_prepare_v2([_database dtbs], _nextSql, -1, &_stmt, &_nextSql)
+			  error: outError];
 	[self updateCurrentSql];
-	return _stmt ? self : nil;
+	return (_errorCode == SQLITE_OK);
 }
 
-- (SLStmt*)reset {
-	if ( _stmt ) {
-		_bind = 0;
-		_column = 0;
-		[self setResult: sqlite3_reset( _stmt )];
+- (BOOL)resetWithError: (NSError**)outError {
+	if ( !_stmt ) {
+		return NO;
 	}
-	return self;
+	_bind = 0;
+	_column = 0;
+	[self setResult: sqlite3_reset( _stmt )
+			  error: outError];
+	return (_errorCode == SQLITE_OK);
 }
 
 
-- (SLStmt*)close {
+- (BOOL)closeWithError: (NSError**)outError {
+	BOOL ok = YES;
 	if ( _stmt ) {
-		int err = sqlite3_finalize( _stmt );
-		if ( err != SQLITE_OK )
-			NSLog( @"Error %d while finalizing query as part of close.", err );
+		[self setResult: sqlite3_finalize( _stmt )
+				  error: outError];
 		_stmt = NULL;
 		[_currentSql release];
 		_currentSql = nil;
 	}
-	return self;
+	return ok;
 }
 
 - (sqlite3_stmt*)stmt {
 	return _stmt;
 }
 
-- (void)step {
-	[self setResult: sqlite3_step( _stmt )];
+- (BOOL)stepWithError: (NSError**)outError {
 	_column = 0;
+	[self setResult: sqlite3_step( _stmt )
+			  error: outError];
+	return ( ( _errorCode == SQLITE_ROW ) | (_errorCode == SQLITE_DONE ) );
 }
 
-- (BOOL)stepHasRow {
-	[self step];
-	return ( _simpleErr == SQLITE_ROW );
+- (BOOL)stepHasRowWithError: (NSError**)outError {
+	_column = 0;
+	[self setResult: sqlite3_step( _stmt )
+			  error: outError];
+	return ( _errorCode == SQLITE_ROW );
 }
 
-- (BOOL)stepOverRows {
+- (BOOL)stepOverRowsWithError: (NSError**)outError {
+	_column = 0;
 	do {
-		[self step];
-	} while ( _simpleErr == SQLITE_ROW);
-	return ( _simpleErr == SQLITE_DONE );
+		[self setResult: sqlite3_step( _stmt )
+				  error: outError];
+	} while ( _errorCode == SQLITE_ROW);
+	return ( _errorCode == SQLITE_DONE );
 }
 
 - (NSArray*)columnNames {
@@ -217,37 +249,51 @@
 	return values;
 }
 
-- (SLStmt*)bindLongLong: (long long)value
-			   forIndex: (int)index {
-	[self setResult: sqlite3_bind_int64( _stmt, index+1, value )];
-	return self;
+- (BOOL)bindLongLong: (long long)value
+			forIndex: (int)index
+			   error: (NSError**)outError {
+	[self setResult: sqlite3_bind_int64( _stmt, index+1, value )
+			  error: outError];
+	return ( _errorCode = SQLITE_OK );
 }
 
-- (SLStmt*)bindLongLong: (long long)value {
+- (BOOL)bindLongLong: (long long)value
+			   error: (NSError**)outError {
 	return [self bindLongLong: value
-					 forIndex: _bind++];
+					 forIndex: _bind++
+						error: outError];
 }
 
-- (SLStmt*)bindString: (NSString*)value
-			 forIndex: (int)index {
-	[self setResult: sqlite3_bind_text( _stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )];
-	return self;
+- (BOOL)bindString: (NSString*)value
+		  forIndex: (int)index
+			 error: (NSError**)outError {
+	[self setResult: sqlite3_bind_text( _stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )
+			  error: outError];
+	return ( _errorCode = SQLITE_OK );
+	
 }
 
-- (SLStmt*)bindString: (NSString*)value {
+- (BOOL)bindString: (NSString*)value
+			 error: (NSError**)outError {
 	return [self bindString: value
-				   forIndex: _bind++];
+				   forIndex: _bind++
+					  error: outError];
 }
 
-- (SLStmt*)bindData: (NSData*)value
-		   forIndex: (int)index {
-	[self setResult: sqlite3_bind_blob( _stmt, index+1, [value bytes], [value length], SQLITE_TRANSIENT )];
-	return self;
+- (BOOL)bindData: (NSData*)value
+		forIndex: (int)index
+		   error: (NSError**)outError {
+	[self setResult: sqlite3_bind_blob( _stmt, index+1, [value bytes], [value length], SQLITE_TRANSIENT )
+			  error: outError];
+	return ( _errorCode = SQLITE_OK );
+	
 }
 
-- (SLStmt*)bindData: (NSData*)value {
+- (BOOL)bindData: (NSData*)value
+		   error: (NSError**)outError {
 	return [self bindData: value
-				 forIndex: _bind++];
+				 forIndex: _bind++
+					error: outError];
 }
 
 
@@ -264,7 +310,8 @@
 		id value = [bindings valueForKey: key];
 		[accepted addObject: key];
 		[self bindString: value
-				forIndex: bindIndex];
+				forIndex: bindIndex
+				   error: nil];
 	}
 	return [NSArray arrayWithArray: accepted];
 }
