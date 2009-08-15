@@ -17,11 +17,11 @@
  
  Objetive-C wrapper for sqlite3_stmt*. */
 @interface SLStmt : NSObject {
-	SLDatabase *_database;
-	sqlite3_stmt *_stmt;
-	int _bind, _column, _errorCode;
-	NSString *_sql, *_currentSql;
-	const char *_thisSql, *_nextSql;
+	SLDatabase *database;
+	sqlite3_stmt *stmt;
+	int bind, column, errorCode;
+	NSString *fullSQL, *currentSQL;
+	const char *thisSQL, *nextSQL;
 }
 
 /** Pointer to sqlite3_stmt. */
@@ -31,15 +31,15 @@
 @property (readonly) NSString *currentSql;
 
 /** Create a new, auto-released statement. */
-+ (id)stmtWithDatabase:(SLDatabase*)database;
++ (id)stmtWithDatabase:(SLDatabase*)inDatabase;
 
 /** Create a statement. */
-- (id)initWithDatabase:(SLDatabase*)database;
+- (id)initWithDatabase:(SLDatabase*)inDatabase;
 
 - (void)dealloc;
 
 /** Compile a SQL query into a prepared statement. Rewinds to first bind point. */
-- (BOOL)prepareSql:(NSString*)sql
+- (BOOL)prepareSQL:(NSString*)inSQL
 			 error: (NSError**)outError;
 
 /** Compile next SQL query. Rewinds to first bind point. */
