@@ -17,9 +17,9 @@
  
  Objetive-C wrapper for sqlite3*. */
 @interface SLDatabase : NSObject {
-	sqlite3 *_dtbs;
-	int _err;
-	const char *_msg;
+	sqlite3 *dtbs;
+	int extendedErr;
+	const char *msg;
 }
 /** Pointer to sqlite3 database. */
 @property (readonly) sqlite3 *dtbs;
@@ -36,7 +36,7 @@
 /** Initialize a new SLDatabase. */
 - (id)initWithPath: (NSString *)inPath;
 
-- (BOOL)exec: (NSString *)sql;
+- (BOOL)execSQL: (NSString *)inSQL;
 
 - (long long)lastInserted;
 

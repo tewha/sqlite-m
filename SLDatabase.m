@@ -12,19 +12,20 @@
 
 @implementation SLDatabase
 
-@synthesize extendedErr=_err, dtbs=_dtbs;
+@synthesize extendedErr, dtbs;
+@dynamic simpleErr;
 
 - (int)simpleErr
 {
-	return _err & 0xFF;
+	return extendedErr & 0xFF;
 }
 
-- (void)setResult: (int)err
+- (void)setResult: (int)inErr
 {
-	_err = err;
-	_msg = sqlite3_errmsg(_dtbs);
-	if ( ( _err != SQLITE_OK ) && ( self.simpleErr < 100 ) )
-		NSLog( @"SLDatabase: (%d) %s", _err, _msg );
+	extendedErr = inErr;
+	msg = sqlite3_errmsg(dtbs);
+	if ( ( extendedErr != SQLITE_OK ) && ( self.simpleErr < 100 ) )
+		NSLog( @"SLDatabase: (%d) %s", extendedErr, msg );
 }
 
 + (id)databaseWithPath: (NSString *)inPath
@@ -36,28 +37,28 @@
 {
 	self = [super init];
 	if (!self) return self;
-	[self setResult:sqlite3_open([inPath UTF8String], &_dtbs)];
-	sqlite3_extended_result_codes( _dtbs, TRUE );
+	[self setResult: sqlite3_open([inPath UTF8String], &dtbs)];
+	sqlite3_extended_result_codes( dtbs, TRUE );
 	return self;
 }
 
 - (void)dealloc
 {
-	int err = sqlite3_close( _dtbs );
-	if ( err != SQLITE_OK )
-		NSLog( @"Error %d while closing database.", err );
+	int theErr = sqlite3_close( dtbs );
+	if ( theErr != SQLITE_OK )
+		NSLog( @"Error %d while closing database.", theErr );
 	[super dealloc];
 }
 
-- (BOOL)exec: (NSString *)sql
+- (BOOL)execSQL: (NSString *)inSQL
 {
-	[self setResult:sqlite3_exec(_dtbs, [sql UTF8String], NULL, NULL, NULL)];
-	return _err == SQLITE_OK;
+	[self setResult: sqlite3_exec(dtbs, [inSQL UTF8String], NULL, NULL, NULL)];
+	return (extendedErr == SQLITE_OK);
 }
 
 - (long long)lastInserted
 {
-	return sqlite3_last_insert_rowid(_dtbs);
+	return sqlite3_last_insert_rowid(dtbs);
 }
 
 
