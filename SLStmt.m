@@ -97,12 +97,27 @@
 
 
 - (BOOL)prepareNextWithError: (NSError **)outError {
+	
+	// finalize previous statement, if any
+	if ( stmt ) {
+		if ( ![self setResult: sqlite3_finalize( stmt )
+						error: outError] ) {
+			return FALSE;
+		}
+		stmt = NULL;
+	}
+	
+	// return immediately if there's no more SQL to process
 	if ( ( nextSQL == NULL ) || ( *nextSQL == 0 ) )
 		return NO;
+	
+	// otherwise, prepare the next chunk of SQL and update the currentSQL property
 	thisSQL = nextSQL;
 	[self setResult: sqlite3_prepare_v2([database dtbs], nextSQL, -1, &stmt, &nextSQL)
 			  error: outError];
 	[self updateCurrentSql];
+	
+	// success, if no error
 	return (errorCode == SQLITE_OK);
 }
 
