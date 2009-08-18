@@ -66,7 +66,7 @@
 
 
 
-- (void)updateCurrentSql {
+- (void)updateCurrentSQL {
 	intptr_t length = (intptr_t)nextSQL - (intptr_t)thisSQL;
 	NSMutableData *data = [NSMutableData dataWithCapacity: length+1];
 	[data appendBytes: thisSQL length: length];
@@ -90,7 +90,7 @@
 	thisSQL = [fullSQL UTF8String];
 	[self setResult: sqlite3_prepare_v2([database dtbs], thisSQL, -1, &stmt, &nextSQL)
 			  error: outError];
-	[self updateCurrentSql];
+	[self updateCurrentSQL];
 	bind = 0;
 	return (errorCode == SQLITE_OK);
 }
@@ -115,7 +115,7 @@
 	thisSQL = nextSQL;
 	[self setResult: sqlite3_prepare_v2([database dtbs], nextSQL, -1, &stmt, &nextSQL)
 			  error: outError];
-	[self updateCurrentSql];
+	[self updateCurrentSQL];
 	
 	// success, if no error
 	return (errorCode == SQLITE_OK);
