@@ -368,10 +368,10 @@
 
 
 
-- (NSArray *)bindDictionary: (NSDictionary *)bindings {
+- (NSSet *)bindDictionary: (NSDictionary *)bindings {
 	if (bindings == nil)
 		return nil;
-	id accepted = [NSMutableArray arrayWithCapacity: bindings.count];
+	id accepted = [NSMutableSet setWithCapacity: bindings.count];
 	NSArray *keys = [bindings allKeys];
 	for (NSString *key in keys) {
 		NSInteger bindIndex = [self findBinding: key];
@@ -384,7 +384,7 @@
 				forIndex: bindIndex
 				   error: nil];
 	}
-	return [NSArray arrayWithArray: accepted];
+	return [NSSet setWithSet: accepted];
 }
 
 

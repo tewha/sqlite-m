@@ -136,7 +136,7 @@
 
 /** Bind all key-values in a dictionary that match bind points.
  Returns keys of matched bound points. */
-- (NSArray *)bindDictionary: (NSDictionary *)bindings;
+- (NSSet *)bindDictionary: (NSDictionary *)bindings;
 
 /** Find bind point with name. */
 - (int)findBinding: (NSString *)name;
