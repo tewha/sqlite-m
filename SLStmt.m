@@ -314,7 +314,7 @@
 			   error: (NSError **)outError {
 	[self setResult: sqlite3_bind_int64( stmt, index+1, value )
 			  error: outError];
-	return ( errorCode = SQLITE_OK );
+	return ( errorCode == SQLITE_OK );
 }
 
 
@@ -333,7 +333,7 @@
 			 error: (NSError **)outError {
 	[self setResult: sqlite3_bind_text( stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )
 			  error: outError];
-	return ( errorCode = SQLITE_OK );
+	return ( errorCode == SQLITE_OK );
 	
 }
 
@@ -353,7 +353,7 @@
 		   error: (NSError **)outError {
 	[self setResult: sqlite3_bind_blob( stmt, index+1, [value bytes], [value length], SQLITE_TRANSIENT )
 			  error: outError];
-	return ( errorCode = SQLITE_OK );
+	return ( errorCode == SQLITE_OK );
 	
 }
 
