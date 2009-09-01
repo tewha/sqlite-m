@@ -92,7 +92,7 @@
 			  error: outError];
 	[self updateCurrentSQL];
 	bind = 0;
-	return (errorCode == SQLITE_OK);
+	return (errorCode == SQLITE_OK) && (stmt != NULL);
 }
 
 
