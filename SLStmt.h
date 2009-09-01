@@ -104,6 +104,9 @@
 /** Get current column's type. Does not advance to next column. */
 - (int)columnType;
 
+/** Get names of all bind parameters. */
+- (NSArray*)bindNames;
+
 /** Bind int64 to a compiled statement.
  @note index is 0-based */
 - (BOOL)bindLongLong: (long long)value

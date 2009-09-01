@@ -309,6 +309,17 @@
 
 
 
+- (NSArray*)bindNames {
+	NSInteger theCount = sqlite3_bind_parameter_count( stmt );
+	NSMutableArray *theBinds = [NSMutableArray arrayWithCapacity: theCount];
+	for ( NSInteger i = 1; i<=theCount; i++ ) {
+		[theBinds addObject: [NSString stringWithUTF8String: sqlite3_bind_parameter_name( stmt, i )]];
+	}
+	return [NSArray arrayWithArray: theBinds];
+}
+
+
+
 - (BOOL)bindLongLong: (long long)value
 			forIndex: (int)index
 			   error: (NSError **)outError {
