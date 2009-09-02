@@ -118,7 +118,7 @@
 	[self updateCurrentSQL];
 	
 	// success, if no error
-	return (errorCode == SQLITE_OK);
+	return (errorCode == SQLITE_OK) && (stmt != NULL);
 }
 
 
