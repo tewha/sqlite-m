@@ -59,8 +59,10 @@
 
 - (void)dealloc;
 {
-	NSError *error;
-	[self closeWithError: &error];
+	if (stmt) {
+		NSError *error;
+		[self closeWithError: &error];
+	}
 	[fullSQL release];
 	[currentSQL release];
 	currentSQL = nil;
