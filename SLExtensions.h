@@ -10,6 +10,9 @@
 #import <CoreFoundation/CoreFoundation.h>
 
 @interface NSDateFormatter(sqlitem)
-+ (NSString*)sqlStringFromDate: (NSDate*)date;
-+ (NSDate*)sqlDateFromString: (NSString*)date;
+
++ (NSString *)sqlStringFromDate: (NSDate *)date;
+
++ (NSDate *)sqlDateFromString: (NSString *)date;
+
 @end

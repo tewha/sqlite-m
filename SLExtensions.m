@@ -11,7 +11,8 @@
 
 @implementation NSDateFormatter(sqlitem)
 
-+ (NSString*)sqlStringFromDate: (NSDate*)inDate {
++ (NSString *)sqlStringFromDate: (NSDate *)inDate;
+{
 	NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
 	[dateFormat setDateFormat: @"yyyy-MM-dd'T'HH:mm:ss ZZZZ"];
 	NSString *dateString = [dateFormat stringFromDate: inDate]; 
@@ -19,7 +20,8 @@
 	return dateString;
 }
 
-+ (NSDate*)sqlDateFromString: (NSString*)inDate {
++ (NSDate *)sqlDateFromString: (NSString *)inDate;
+{
 	NSDateFormatter *dateFormat = [[NSDateFormatter alloc] init];
 	[dateFormat setDateFormat: @"yyyy-MM-dd'T'HH:mm:ss ZZZZ"];
 	NSDate *date = [dateFormat dateFromString: inDate];  

@@ -15,12 +15,16 @@
 @synthesize extendedErr, dtbs;
 @dynamic simpleErr;
 
-- (int)simpleErr
+
+
+- (int)simpleErr;
 {
 	return extendedErr & 0xFF;
 }
 
-- (void)setResult: (int)inErr
+
+
+- (void)setResult: (int)inErr;
 {
 	extendedErr = inErr;
 	msg = sqlite3_errmsg(dtbs);
@@ -28,12 +32,16 @@
 		NSLog( @"SLDatabase: (%d) %s", extendedErr, msg );
 }
 
-+ (id)databaseWithPath: (NSString *)inPath
+
+
++ (id)databaseWithPath: (NSString *)inPath;
 {
     return [[[self alloc] initWithPath:inPath] autorelease];
 }
 
-- (id)initWithPath: (NSString *)inPath
+
+
+- (id)initWithPath: (NSString *)inPath;
 {
 	self = [super init];
 	if (!self) return self;
@@ -42,7 +50,9 @@
 	return self;
 }
 
-- (void)dealloc
+
+
+- (void)dealloc;
 {
 	int theErr = sqlite3_close( dtbs );
 	if ( theErr != SQLITE_OK )
@@ -50,16 +60,21 @@
 	[super dealloc];
 }
 
-- (BOOL)execSQL: (NSString *)inSQL
+
+
+- (BOOL)execSQL: (NSString *)inSQL;
 {
 	[self setResult: sqlite3_exec(dtbs, [inSQL UTF8String], NULL, NULL, NULL)];
 	return (extendedErr == SQLITE_OK);
 }
 
-- (long long)lastInserted
+
+
+- (long long)lastInserted;
 {
 	return sqlite3_last_insert_rowid(dtbs);
 }
+
 
 
 @end
