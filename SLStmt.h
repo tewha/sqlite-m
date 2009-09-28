@@ -137,6 +137,11 @@
 - (BOOL)bindData: (NSData *)value
 		   error: (NSError **)outError;
 
+/** Bind NSString, NSData or NSNumber. */
+- (void)bindValue: (id)value
+		 forIndex: (int)index
+			error: (NSError **)outError;
+
 /** Bind all key-values in a dictionary that match bind points.
  Returns keys of matched bound points. */
 - (NSSet *)bindDictionary: (NSDictionary *)bindings;

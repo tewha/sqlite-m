@@ -413,6 +413,34 @@
 
 
 
+- (void)bindValue: (id)value
+		 forIndex: (int)index
+			error: (NSError **)outError;
+{
+	if ( [value isKindOfClass: [NSData class]] ) {
+		[self bindData: value
+			  forIndex: index
+				 error: outError];
+	} else if ( [value isKindOfClass: [NSNumber class]] ) {
+		[self bindString: [value stringValue]
+				forIndex: index
+				   error: outError];
+	} else if ( [value isKindOfClass: [NSString class]] ) {
+		[self bindString: value
+				forIndex: index
+				   error: outError];
+	} else {
+		id theError = [NSError errorWithDomain: @"sqlite"
+										  code: -1
+									  userInfo: nil];
+		if (outError) {
+			*outError = theError;
+		}
+	}
+}
+
+
+
 - (NSSet *)bindDictionary: (NSDictionary *)bindings;
 {
 	if (bindings == nil)
@@ -425,10 +453,13 @@
 			continue;
 		}
 		id value = [bindings valueForKey: key];
-		[accepted addObject: key];
-		[self bindString: value
-				forIndex: bindIndex
-				   error: nil];
+		NSError *error = nil;
+		[self bindValue: value
+			   forIndex: bindIndex
+				  error: &error];
+		if (error == nil) {
+			[accepted addObject: key];
+		}
 	}
 	return [NSSet setWithSet: accepted];
 }
