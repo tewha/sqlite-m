@@ -413,22 +413,23 @@
 
 
 
-- (void)bindValue: (id)value
+- (BOOL)bindValue: (id)value
 		 forIndex: (int)index
 			error: (NSError **)outError;
 {
+	BOOL ok = NO;
 	if ( [value isKindOfClass: [NSData class]] ) {
-		[self bindData: value
-			  forIndex: index
-				 error: outError];
+		ok = [self bindData: value
+				   forIndex: index
+					  error: outError];
 	} else if ( [value isKindOfClass: [NSNumber class]] ) {
-		[self bindString: [value stringValue]
-				forIndex: index
-				   error: outError];
+		ok = [self bindString: [value stringValue]
+					 forIndex: index
+						error: outError];
 	} else if ( [value isKindOfClass: [NSString class]] ) {
-		[self bindString: value
-				forIndex: index
-				   error: outError];
+		ok = [self bindString: value
+					 forIndex: index
+						error: outError];
 	} else {
 		id theError = [NSError errorWithDomain: @"sqlite"
 										  code: -1
@@ -437,6 +438,7 @@
 			*outError = theError;
 		}
 	}
+	return ok;
 }
 
 

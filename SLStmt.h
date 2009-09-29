@@ -138,7 +138,7 @@
 		   error: (NSError **)outError;
 
 /** Bind NSString, NSData or NSNumber. */
-- (void)bindValue: (id)value
+- (BOOL)bindValue: (id)value
 		 forIndex: (int)index
 			error: (NSError **)outError;
 
