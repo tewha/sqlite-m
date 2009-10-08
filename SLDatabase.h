@@ -7,7 +7,7 @@
 //  See LICENSE.TXT for more information.
 //
 
-#import <CoreFoundation/CoreFoundation.h>
+#import <Foundation/Foundation.h>
 #import <sqlite3.h>
 
 @class SLStmt;
