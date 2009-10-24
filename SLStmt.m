@@ -443,6 +443,16 @@
 
 
 
+- (BOOL)bindValue: (id)value
+			error: (NSError **)outError;
+{
+	return [self bindValue: value
+				  forIndex: bind++
+					 error: outError];
+}
+
+
+
 - (NSSet *)bindDictionary: (NSDictionary *)bindings;
 {
 	if (bindings == nil)
