@@ -127,6 +127,14 @@
 - (BOOL)bindString: (NSString *)value
 			 error: (NSError **)outError;
 
+/** Bind NULL to a compiled statement.
+ @note index is 0-based */
+- (BOOL)bindNullForIndex: (int)index
+				   error: (NSError **)outError;
+
+/** Bind NULL to a compiled statement and advance to next bind point. */
+- (BOOL)bindNullWithError: (NSError **)outError;
+
 /** Bind blob to a compiled statement.
  @note index is 0-based */
 - (BOOL)bindData: (NSData *)value

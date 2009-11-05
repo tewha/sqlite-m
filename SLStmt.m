@@ -391,6 +391,24 @@
 
 
 
+- (BOOL)bindNullForIndex: (int)index
+				   error: (NSError **)outError;
+{
+	[self setResult: sqlite3_bind_null( stmt, index+1 )
+			  error: outError];
+	return ( errorCode == SQLITE_OK );
+}
+
+
+
+- (BOOL)bindNullWithError: (NSError **)outError;
+{
+	return [self bindNullForIndex: bind++
+							error: outError];
+}
+
+
+
 - (BOOL)bindData: (NSData *)value
 		forIndex: (int)index
 		   error: (NSError **)outError;
@@ -430,6 +448,9 @@
 		ok = [self bindString: value
 					 forIndex: index
 						error: outError];
+	} else if ( value == [NSNull null] ) {
+		ok = [self bindNullForIndex: index
+							  error: outError];
 	} else {
 		id theError = [NSError errorWithDomain: @"sqlite"
 										  code: -1
