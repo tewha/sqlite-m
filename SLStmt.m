@@ -350,10 +350,10 @@
 
 
 - (BOOL)bindLongLong: (long long)value
-			forIndex: (int)index
+			forIndex: (int)inIndex
 			   error: (NSError **)outError;
 {
-	[self setResult: sqlite3_bind_int64( stmt, index+1, value )
+	[self setResult: sqlite3_bind_int64( stmt, inIndex+1, value )
 			  error: outError];
 	return ( errorCode == SQLITE_OK );
 }
@@ -370,10 +370,10 @@
 
 
 
-- (BOOL)bindNullForIndex: (int)index
+- (BOOL)bindNullForIndex: (int)inIndex
 				   error: (NSError **)outError;
 {
-	[self setResult: sqlite3_bind_null( stmt, index+1 )
+	[self setResult: sqlite3_bind_null( stmt, inIndex+1 )
 			  error: outError];
 	return ( errorCode == SQLITE_OK );
 }
@@ -389,10 +389,10 @@
 
 
 - (BOOL)bindData: (NSData *)value
-		forIndex: (int)index
+		forIndex: (int)inIndex
 		   error: (NSError **)outError;
 {
-	[self setResult: sqlite3_bind_blob( stmt, index+1, [value bytes], [value length], SQLITE_TRANSIENT )
+	[self setResult: sqlite3_bind_blob( stmt, inIndex+1, [value bytes], [value length], SQLITE_TRANSIENT )
 			  error: outError];
 	return ( errorCode == SQLITE_OK );
 	
@@ -411,24 +411,24 @@
 
 
 - (BOOL)bindValue: (id)value
-		 forIndex: (int)index
+		 forIndex: (int)inIndex
 			error: (NSError **)outError;
 {
 	BOOL ok = NO;
 	if ( [value isKindOfClass: [NSData class]] ) {
 		ok = [self bindData: value
-				   forIndex: index
+				   forIndex: inIndex
 					  error: outError];
 	} else if ( [value isKindOfClass: [NSNumber class]] ) {
-		[self setResult: sqlite3_bind_text( stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )
+		[self setResult: sqlite3_bind_text( stmt, inIndex+1, [value UTF8String], -1, SQLITE_TRANSIENT )
 				  error: outError];
 		ok = ( errorCode == SQLITE_OK );
 	} else if ( [value isKindOfClass: [NSString class]] ) {
-		[self setResult: sqlite3_bind_text( stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )
+		[self setResult: sqlite3_bind_text( stmt, inIndex+1, [value UTF8String], -1, SQLITE_TRANSIENT )
 				  error: outError];
 		ok = ( errorCode == SQLITE_OK );
 	} else if ( value == [NSNull null] ) {
-		ok = [self bindNullForIndex: index
+		ok = [self bindNullForIndex: inIndex
 							  error: outError];
 	} else {
 		id theError = [NSError errorWithDomain: @"sqlite"
