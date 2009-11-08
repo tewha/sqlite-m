@@ -69,13 +69,19 @@
 - (NSArray *)columnNames;
 
 /** Get the number of columns in the result set. */
-- (long long)columnCount;
+- (int)columnCount;
 
 /** Get a specifc column's name. */
 - (NSString *)columnName: (int)inColumn;
 
 /** Get column name of the current column. */
 - (NSString *)columnName;
+
+/** Get a specific column's contents as int. */
+- (int)intValue: (int)inColumn;
+
+/** Get current column's contents as int and advance to next column. */
+- (int)intValue;
 
 /** Get a specific column's contents as int64. */
 - (long long)longLongValue: (int)inColumn;

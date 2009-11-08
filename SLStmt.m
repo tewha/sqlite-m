@@ -212,7 +212,7 @@
 
 
 
-- (long long)columnCount;
+- (int)columnCount;
 {
 	return sqlite3_column_count( stmt );
 }
@@ -235,6 +235,20 @@
 	if ( text == NULL )
 		return nil;
 	return [NSString stringWithUTF8String: text];
+}
+
+
+
+- (int)intValue: (int)inColumn;
+{
+	return sqlite3_column_int( stmt, inColumn );
+}
+
+
+
+- (int)intValue;
+{
+	return [self intValue: column++];
 }
 
 
