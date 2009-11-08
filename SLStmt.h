@@ -117,16 +117,6 @@
 - (BOOL)bindLongLong: (long long)value
 			   error: (NSError **)outError;
 
-/** Bind string to a compiled statement.
- @note index is 0-based */
-- (BOOL)bindString: (NSString *)value
-		  forIndex: (int)index
-			 error: (NSError **)outError;
-
-/** Bind string to a compiled statement and advance to next bind point. */
-- (BOOL)bindString: (NSString *)value
-			 error: (NSError **)outError;
-
 /** Bind NULL to a compiled statement.
  @note index is 0-based */
 - (BOOL)bindNullForIndex: (int)index

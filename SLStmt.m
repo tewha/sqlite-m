@@ -370,27 +370,6 @@
 
 
 
-- (BOOL)bindString: (NSString *)value
-		  forIndex: (int)index
-			 error: (NSError **)outError;
-{
-	[self setResult: sqlite3_bind_text( stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )
-			  error: outError];
-	return ( errorCode == SQLITE_OK );
-}
-
-
-
-- (BOOL)bindString: (NSString *)value
-			 error: (NSError **)outError;
-{
-	return [self bindString: value
-				   forIndex: bind++
-					  error: outError];
-}
-
-
-
 - (BOOL)bindNullForIndex: (int)index
 				   error: (NSError **)outError;
 {
@@ -441,13 +420,13 @@
 				   forIndex: index
 					  error: outError];
 	} else if ( [value isKindOfClass: [NSNumber class]] ) {
-		ok = [self bindString: [value stringValue]
-					 forIndex: index
-						error: outError];
+		[self setResult: sqlite3_bind_text( stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )
+				  error: outError];
+		ok = ( errorCode == SQLITE_OK );
 	} else if ( [value isKindOfClass: [NSString class]] ) {
-		ok = [self bindString: value
-					 forIndex: index
-						error: outError];
+		[self setResult: sqlite3_bind_text( stmt, index+1, [value UTF8String], -1, SQLITE_TRANSIENT )
+				  error: outError];
+		ok = ( errorCode == SQLITE_OK );
 	} else if ( value == [NSNull null] ) {
 		ok = [self bindNullForIndex: index
 							  error: outError];
