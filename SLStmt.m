@@ -434,7 +434,7 @@
 				   forIndex: inIndex
 					  error: outError];
 	} else if ( [value isKindOfClass: [NSNumber class]] ) {
-		id str = [NSString stringWithFormat: @"R%@", value];
+		id str = [value description];
 		[self setResult: sqlite3_bind_text( stmt, inIndex+1, [str UTF8String], -1, SQLITE_TRANSIENT )
 				  error: outError];
 		ok = ( errorCode == SQLITE_OK );
